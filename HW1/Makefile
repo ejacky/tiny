@@ -4,6 +4,9 @@ CC=gcc
 OBJS = main.o util.c lex.yy.c parse.c scan.c cgen.c analyze.c systab.c
 
 
+CCFLAGS = -lfl
+
+
 #매크로 호출은 $(매크로명)
 #
 #$@ 현재 타겟
