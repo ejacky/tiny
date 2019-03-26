@@ -57,10 +57,15 @@ whitespace  [ \t]+
 int c;
 for(;;){
 while( (c = input()) != '*' && c !=EOF)
-;
+	{if(c =='\n')lineno++;}
+	//;
+
+  if(c =='\n')lineno++;
   if (c == '*'){
     while(  (c = input()) == '*')
-      ;
+	{if(c=='\n')lineno++;}    
+	 // ;
+    if(c =='\n')lineno++;
     if (c == '/')
      break;  /* found end*/
   }
