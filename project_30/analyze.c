@@ -45,22 +45,27 @@ static void nullProc(TreeNode * t)
  * identifiers stored in t into 
  * the symbol table 
  */
+//TODO tiny -> C-
 static void insertNode( TreeNode * t)
 { switch (t->nodekind)
   { case StmtK:
       switch (t->kind.stmt)
-      { case AssignK:
+      { 
+        //TODO C-에는 없는 StmtK들
+        /*
+        case AssignK:
         case ReadK:
           if (st_lookup(t->attr.name) == -1)
-          /* not yet in table, so treat as new definition */
+          // not yet in table, so treat as new definition 
             st_insert(t->attr.name,t->lineno,location++);
           else
-          /* already in table, so ignore location, 
-             add line number of use only */ 
+          // already in table, so ignore location, 
+             add line number of use only 
             st_insert(t->attr.name,t->lineno,0);
           break;
         default:
           break;
+          */
       }
       break;
     case ExpK:
@@ -73,6 +78,18 @@ static void insertNode( TreeNode * t)
           /* already in table, so ignore location, 
              add line number of use only */ 
             st_insert(t->attr.name,t->lineno,0);
+          break;
+        // Array는 별도의 id kind를 지님.
+        case ArrIdK:
+          if (st_lookup(t->attr.arr.name) == -1)
+          /* not yet in table, so treat as new definition */
+            st_insert(t->attr.arr.name,t->lineno,location++);
+          else
+          /* already in table, so ignore location, 
+             add line number of use only */ 
+            st_insert(t->attr.arr.name,t->lineno,0);
+          break;
+
           break;
         default:
           break;
@@ -103,10 +120,13 @@ static void typeError(TreeNode * t, char * message)
  * type checking at a single tree node
  */
 static void checkNode(TreeNode * t)
-{ switch (t->nodekind)
+{
+  /*
+  switch (t->nodekind)
   { case ExpK:
       switch (t->kind.exp)
-      { case OpK:
+      {
+        case OpK:
           if ((t->child[0]->type != Integer) ||
               (t->child[1]->type != Integer))
             typeError(t,"Op applied to non-integer");
@@ -149,6 +169,7 @@ static void checkNode(TreeNode * t)
       break;
 
   }
+  */
 }
 
 /* Procedure typeCheck performs type checking 

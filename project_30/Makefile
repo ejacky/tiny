@@ -5,9 +5,9 @@
 
 CC = gcc
 
-CFLAGS = 
+CFLAGS = -g
 
-OBJS = hw3.tab.o lex.yy.o main.o util.o analyze.o symtab.o parse.o
+OBJS = hw3.tab.o lex.yy.o main.o util.o analyze.o symtab.o 
 
 20130523: $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o 20130523
@@ -18,8 +18,8 @@ main.o: main.c globals.h util.h scan.h parse.h analyze.h
 analyze.o: analyze.c analyze.h globals.h symtab.h
 	$(CC) $(CFLAGS) -c analyze.c
 
-symtab.o: systab.c symtab.h
-	$(CC) $(CFLAGS) -c systab.c
+symtab.o: symtab.c symtab.h
+	$(CC) $(CFLAGS) -c symtab.c
 
 util.o: util.c util.h globals.h
 	$(CC) $(CFLAGS) -c util.c

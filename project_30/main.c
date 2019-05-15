@@ -39,8 +39,8 @@ FILE * code;
 /* allocate and set tracing flags */
 int EchoSource = TRUE;
 int TraceScan = FALSE;
-int TraceParse = TRUE;
-int TraceAnalyze = FALSE;
+int TraceParse = FALSE;
+int TraceAnalyze = TRUE;
 int TraceCode = FALSE;
 
 int Error = FALSE;
@@ -78,6 +78,8 @@ int main( int argc, char * argv[] )
     typeCheck(syntaxTree);
     if (TraceAnalyze) fprintf(listing,"\nType Checking Finished\n");
   }
+  else
+    printf("ERROR!!\n");
 #if !NO_CODE
   if (! Error)
   { char * codefile;
