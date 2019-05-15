@@ -9,7 +9,7 @@ CFLAGS = -g
 
 OBJS = hw3.tab.o lex.yy.o main.o util.o analyze.o symtab.o 
 
-20130523: $(OBJS)
+project3_30: $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o 20130523
 
 main.o: main.c globals.h util.h scan.h parse.h analyze.h
@@ -41,4 +41,4 @@ clean:
 	-rm lex.yy.c
 	-rm $(OBJS)
 
-all: 20130523 clean
+all: project3_30 clean
