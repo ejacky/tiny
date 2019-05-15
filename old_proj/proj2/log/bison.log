@@ -1,0 +1,1303 @@
+Terminals unused in grammar
+
+   ERROR
+   COMMENT
+   COMMENT_ERROR
+
+
+Grammar
+
+    0 $accept: program $end
+
+    1 program: decl_list
+
+    2 decl_list: decl_list decl
+    3          | decl
+
+    4 decl: var_decl
+    5     | func_decl
+
+    6 var_decl: type_spec id_node SEMICOLON
+    7         | type_spec id_node LBRACKET num_node RBRACKET SEMICOLON
+
+    8 type_spec: INT
+    9          | VOID
+
+   10 func_decl: type_spec id_node LPAREN params RPAREN comp_stmt
+
+   11 params: param_list
+   12       | VOID
+
+   13 param_list: param_list COMMA param
+   14           | param
+
+   15 param: type_spec id_node
+   16      | type_spec id_node LBRACKET RBRACKET
+
+   17 comp_stmt: LBRACE local_decls stmt_list RBRACE
+
+   18 local_decls: local_decls var_decl
+   19            | empty
+
+   20 stmt_list: stmt_list stmt
+   21          | empty
+
+   22 stmt: expr_stmt
+   23     | comp_stmt
+   24     | select_stmt
+   25     | iter_stmt
+   26     | return_stmt
+
+   27 expr_stmt: expr SEMICOLON
+   28          | SEMICOLON
+
+   29 select_stmt: IF LPAREN expr RPAREN stmt
+   30            | IF LPAREN expr RPAREN stmt ELSE stmt
+
+   31 iter_stmt: WHILE LPAREN expr RPAREN stmt
+
+   32 return_stmt: RETURN SEMICOLON
+   33            | RETURN expr SEMICOLON
+
+   34 expr: var ASSIGN expr
+   35     | simple_expr
+
+   36 var: id_node
+   37    | id_node LBRACKET expr RBRACKET
+
+   38 simple_expr: add_expr relop add_expr
+   39            | add_expr
+
+   40 relop: LESSTHEN
+   41      | LESSEQUAL
+   42      | GREATTHEN
+   43      | GREATEQUAL
+   44      | EQUAL
+   45      | NOTEQUAL
+
+   46 add_expr: add_expr addop term
+   47         | term
+
+   48 addop: PLUS
+   49      | MINUS
+
+   50 term: term mulop factor
+   51     | factor
+
+   52 mulop: TIMES
+   53      | OVER
+
+   54 factor: LPAREN expr RPAREN
+   55       | var
+   56       | call
+   57       | num_node
+
+   58 call: id_node LPAREN args RPAREN
+
+   59 args: arg_list
+   60     | empty
+
+   61 arg_list: arg_list COMMA expr
+   62         | expr
+
+   63 id_node: ID
+
+   64 num_node: NUM
+
+   65 empty: %empty
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+ELSE (258) 30
+IF (259) 29 30
+INT (260) 8
+RETURN (261) 32 33
+VOID (262) 9 12
+WHILE (263) 31
+ID (264) 63
+NUM (265) 64
+PLUS (266) 48
+MINUS (267) 49
+TIMES (268) 52
+OVER (269) 53
+LESSTHEN (270) 40
+LESSEQUAL (271) 41
+GREATTHEN (272) 42
+GREATEQUAL (273) 43
+EQUAL (274) 44
+NOTEQUAL (275) 45
+ASSIGN (276) 34
+SEMICOLON (277) 6 7 27 28 32 33
+COMMA (278) 13 61
+LPAREN (279) 10 29 30 31 54 58
+RPAREN (280) 10 29 30 31 54 58
+LBRACKET (281) 7 16 37
+RBRACKET (282) 7 16 37
+LBRACE (283) 17
+RBRACE (284) 17
+ERROR (285)
+COMMENT (286)
+COMMENT_ERROR (287)
+
+
+Nonterminals, with rules where they appear
+
+$accept (33)
+    on left: 0
+program (34)
+    on left: 1, on right: 0
+decl_list (35)
+    on left: 2 3, on right: 1 2
+decl (36)
+    on left: 4 5, on right: 2 3
+var_decl (37)
+    on left: 6 7, on right: 4 18
+type_spec (38)
+    on left: 8 9, on right: 6 7 10 15 16
+func_decl (39)
+    on left: 10, on right: 5
+params (40)
+    on left: 11 12, on right: 10
+param_list (41)
+    on left: 13 14, on right: 11 13
+param (42)
+    on left: 15 16, on right: 13 14
+comp_stmt (43)
+    on left: 17, on right: 10 23
+local_decls (44)
+    on left: 18 19, on right: 17 18
+stmt_list (45)
+    on left: 20 21, on right: 17 20
+stmt (46)
+    on left: 22 23 24 25 26, on right: 20 29 30 31
+expr_stmt (47)
+    on left: 27 28, on right: 22
+select_stmt (48)
+    on left: 29 30, on right: 24
+iter_stmt (49)
+    on left: 31, on right: 25
+return_stmt (50)
+    on left: 32 33, on right: 26
+expr (51)
+    on left: 34 35, on right: 27 29 30 31 33 34 37 54 61 62
+var (52)
+    on left: 36 37, on right: 34 55
+simple_expr (53)
+    on left: 38 39, on right: 35
+relop (54)
+    on left: 40 41 42 43 44 45, on right: 38
+add_expr (55)
+    on left: 46 47, on right: 38 39 46
+addop (56)
+    on left: 48 49, on right: 46
+term (57)
+    on left: 50 51, on right: 46 47 50
+mulop (58)
+    on left: 52 53, on right: 50
+factor (59)
+    on left: 54 55 56 57, on right: 50 51
+call (60)
+    on left: 58, on right: 56
+args (61)
+    on left: 59 60, on right: 58
+arg_list (62)
+    on left: 61 62, on right: 59 61
+id_node (63)
+    on left: 63, on right: 6 7 10 15 16 36 37 58
+num_node (64)
+    on left: 64, on right: 7 57
+empty (65)
+    on left: 65, on right: 19 21 60
+
+
+State 0
+
+    0 $accept: . program $end
+
+    INT   shift, and go to state 1
+    VOID  shift, and go to state 2
+
+    program    go to state 3
+    decl_list  go to state 4
+    decl       go to state 5
+    var_decl   go to state 6
+    type_spec  go to state 7
+    func_decl  go to state 8
+
+
+State 1
+
+    8 type_spec: INT .
+
+    $default  reduce using rule 8 (type_spec)
+
+
+State 2
+
+    9 type_spec: VOID .
+
+    $default  reduce using rule 9 (type_spec)
+
+
+State 3
+
+    0 $accept: program . $end
+
+    $end  shift, and go to state 9
+
+
+State 4
+
+    1 program: decl_list .
+    2 decl_list: decl_list . decl
+
+    INT   shift, and go to state 1
+    VOID  shift, and go to state 2
+
+    $default  reduce using rule 1 (program)
+
+    decl       go to state 10
+    var_decl   go to state 6
+    type_spec  go to state 7
+    func_decl  go to state 8
+
+
+State 5
+
+    3 decl_list: decl .
+
+    $default  reduce using rule 3 (decl_list)
+
+
+State 6
+
+    4 decl: var_decl .
+
+    $default  reduce using rule 4 (decl)
+
+
+State 7
+
+    6 var_decl: type_spec . id_node SEMICOLON
+    7         | type_spec . id_node LBRACKET num_node RBRACKET SEMICOLON
+   10 func_decl: type_spec . id_node LPAREN params RPAREN comp_stmt
+
+    ID  shift, and go to state 11
+
+    id_node  go to state 12
+
+
+State 8
+
+    5 decl: func_decl .
+
+    $default  reduce using rule 5 (decl)
+
+
+State 9
+
+    0 $accept: program $end .
+
+    $default  accept
+
+
+State 10
+
+    2 decl_list: decl_list decl .
+
+    $default  reduce using rule 2 (decl_list)
+
+
+State 11
+
+   63 id_node: ID .
+
+    $default  reduce using rule 63 (id_node)
+
+
+State 12
+
+    6 var_decl: type_spec id_node . SEMICOLON
+    7         | type_spec id_node . LBRACKET num_node RBRACKET SEMICOLON
+   10 func_decl: type_spec id_node . LPAREN params RPAREN comp_stmt
+
+    SEMICOLON  shift, and go to state 13
+    LPAREN     shift, and go to state 14
+    LBRACKET   shift, and go to state 15
+
+
+State 13
+
+    6 var_decl: type_spec id_node SEMICOLON .
+
+    $default  reduce using rule 6 (var_decl)
+
+
+State 14
+
+   10 func_decl: type_spec id_node LPAREN . params RPAREN comp_stmt
+
+    INT   shift, and go to state 1
+    VOID  shift, and go to state 16
+
+    type_spec   go to state 17
+    params      go to state 18
+    param_list  go to state 19
+    param       go to state 20
+
+
+State 15
+
+    7 var_decl: type_spec id_node LBRACKET . num_node RBRACKET SEMICOLON
+
+    NUM  shift, and go to state 21
+
+    num_node  go to state 22
+
+
+State 16
+
+    9 type_spec: VOID .
+   12 params: VOID .
+
+    RPAREN    reduce using rule 12 (params)
+    $default  reduce using rule 9 (type_spec)
+
+
+State 17
+
+   15 param: type_spec . id_node
+   16      | type_spec . id_node LBRACKET RBRACKET
+
+    ID  shift, and go to state 11
+
+    id_node  go to state 23
+
+
+State 18
+
+   10 func_decl: type_spec id_node LPAREN params . RPAREN comp_stmt
+
+    RPAREN  shift, and go to state 24
+
+
+State 19
+
+   11 params: param_list .
+   13 param_list: param_list . COMMA param
+
+    COMMA  shift, and go to state 25
+
+    $default  reduce using rule 11 (params)
+
+
+State 20
+
+   14 param_list: param .
+
+    $default  reduce using rule 14 (param_list)
+
+
+State 21
+
+   64 num_node: NUM .
+
+    $default  reduce using rule 64 (num_node)
+
+
+State 22
+
+    7 var_decl: type_spec id_node LBRACKET num_node . RBRACKET SEMICOLON
+
+    RBRACKET  shift, and go to state 26
+
+
+State 23
+
+   15 param: type_spec id_node .
+   16      | type_spec id_node . LBRACKET RBRACKET
+
+    LBRACKET  shift, and go to state 27
+
+    $default  reduce using rule 15 (param)
+
+
+State 24
+
+   10 func_decl: type_spec id_node LPAREN params RPAREN . comp_stmt
+
+    LBRACE  shift, and go to state 28
+
+    comp_stmt  go to state 29
+
+
+State 25
+
+   13 param_list: param_list COMMA . param
+
+    INT   shift, and go to state 1
+    VOID  shift, and go to state 2
+
+    type_spec  go to state 17
+    param      go to state 30
+
+
+State 26
+
+    7 var_decl: type_spec id_node LBRACKET num_node RBRACKET . SEMICOLON
+
+    SEMICOLON  shift, and go to state 31
+
+
+State 27
+
+   16 param: type_spec id_node LBRACKET . RBRACKET
+
+    RBRACKET  shift, and go to state 32
+
+
+State 28
+
+   17 comp_stmt: LBRACE . local_decls stmt_list RBRACE
+
+    $default  reduce using rule 65 (empty)
+
+    local_decls  go to state 33
+    empty        go to state 34
+
+
+State 29
+
+   10 func_decl: type_spec id_node LPAREN params RPAREN comp_stmt .
+
+    $default  reduce using rule 10 (func_decl)
+
+
+State 30
+
+   13 param_list: param_list COMMA param .
+
+    $default  reduce using rule 13 (param_list)
+
+
+State 31
+
+    7 var_decl: type_spec id_node LBRACKET num_node RBRACKET SEMICOLON .
+
+    $default  reduce using rule 7 (var_decl)
+
+
+State 32
+
+   16 param: type_spec id_node LBRACKET RBRACKET .
+
+    $default  reduce using rule 16 (param)
+
+
+State 33
+
+   17 comp_stmt: LBRACE local_decls . stmt_list RBRACE
+   18 local_decls: local_decls . var_decl
+
+    INT   shift, and go to state 1
+    VOID  shift, and go to state 2
+
+    $default  reduce using rule 65 (empty)
+
+    var_decl   go to state 35
+    type_spec  go to state 36
+    stmt_list  go to state 37
+    empty      go to state 38
+
+
+State 34
+
+   19 local_decls: empty .
+
+    $default  reduce using rule 19 (local_decls)
+
+
+State 35
+
+   18 local_decls: local_decls var_decl .
+
+    $default  reduce using rule 18 (local_decls)
+
+
+State 36
+
+    6 var_decl: type_spec . id_node SEMICOLON
+    7         | type_spec . id_node LBRACKET num_node RBRACKET SEMICOLON
+
+    ID  shift, and go to state 11
+
+    id_node  go to state 39
+
+
+State 37
+
+   17 comp_stmt: LBRACE local_decls stmt_list . RBRACE
+   20 stmt_list: stmt_list . stmt
+
+    IF         shift, and go to state 40
+    RETURN     shift, and go to state 41
+    WHILE      shift, and go to state 42
+    ID         shift, and go to state 11
+    NUM        shift, and go to state 21
+    SEMICOLON  shift, and go to state 43
+    LPAREN     shift, and go to state 44
+    LBRACE     shift, and go to state 28
+    RBRACE     shift, and go to state 45
+
+    comp_stmt    go to state 46
+    stmt         go to state 47
+    expr_stmt    go to state 48
+    select_stmt  go to state 49
+    iter_stmt    go to state 50
+    return_stmt  go to state 51
+    expr         go to state 52
+    var          go to state 53
+    simple_expr  go to state 54
+    add_expr     go to state 55
+    term         go to state 56
+    factor       go to state 57
+    call         go to state 58
+    id_node      go to state 59
+    num_node     go to state 60
+
+
+State 38
+
+   21 stmt_list: empty .
+
+    $default  reduce using rule 21 (stmt_list)
+
+
+State 39
+
+    6 var_decl: type_spec id_node . SEMICOLON
+    7         | type_spec id_node . LBRACKET num_node RBRACKET SEMICOLON
+
+    SEMICOLON  shift, and go to state 13
+    LBRACKET   shift, and go to state 15
+
+
+State 40
+
+   29 select_stmt: IF . LPAREN expr RPAREN stmt
+   30            | IF . LPAREN expr RPAREN stmt ELSE stmt
+
+    LPAREN  shift, and go to state 61
+
+
+State 41
+
+   32 return_stmt: RETURN . SEMICOLON
+   33            | RETURN . expr SEMICOLON
+
+    ID         shift, and go to state 11
+    NUM        shift, and go to state 21
+    SEMICOLON  shift, and go to state 62
+    LPAREN     shift, and go to state 44
+
+    expr         go to state 63
+    var          go to state 53
+    simple_expr  go to state 54
+    add_expr     go to state 55
+    term         go to state 56
+    factor       go to state 57
+    call         go to state 58
+    id_node      go to state 59
+    num_node     go to state 60
+
+
+State 42
+
+   31 iter_stmt: WHILE . LPAREN expr RPAREN stmt
+
+    LPAREN  shift, and go to state 64
+
+
+State 43
+
+   28 expr_stmt: SEMICOLON .
+
+    $default  reduce using rule 28 (expr_stmt)
+
+
+State 44
+
+   54 factor: LPAREN . expr RPAREN
+
+    ID      shift, and go to state 11
+    NUM     shift, and go to state 21
+    LPAREN  shift, and go to state 44
+
+    expr         go to state 65
+    var          go to state 53
+    simple_expr  go to state 54
+    add_expr     go to state 55
+    term         go to state 56
+    factor       go to state 57
+    call         go to state 58
+    id_node      go to state 59
+    num_node     go to state 60
+
+
+State 45
+
+   17 comp_stmt: LBRACE local_decls stmt_list RBRACE .
+
+    $default  reduce using rule 17 (comp_stmt)
+
+
+State 46
+
+   23 stmt: comp_stmt .
+
+    $default  reduce using rule 23 (stmt)
+
+
+State 47
+
+   20 stmt_list: stmt_list stmt .
+
+    $default  reduce using rule 20 (stmt_list)
+
+
+State 48
+
+   22 stmt: expr_stmt .
+
+    $default  reduce using rule 22 (stmt)
+
+
+State 49
+
+   24 stmt: select_stmt .
+
+    $default  reduce using rule 24 (stmt)
+
+
+State 50
+
+   25 stmt: iter_stmt .
+
+    $default  reduce using rule 25 (stmt)
+
+
+State 51
+
+   26 stmt: return_stmt .
+
+    $default  reduce using rule 26 (stmt)
+
+
+State 52
+
+   27 expr_stmt: expr . SEMICOLON
+
+    SEMICOLON  shift, and go to state 66
+
+
+State 53
+
+   34 expr: var . ASSIGN expr
+   55 factor: var .
+
+    ASSIGN  shift, and go to state 67
+
+    $default  reduce using rule 55 (factor)
+
+
+State 54
+
+   35 expr: simple_expr .
+
+    $default  reduce using rule 35 (expr)
+
+
+State 55
+
+   38 simple_expr: add_expr . relop add_expr
+   39            | add_expr .
+   46 add_expr: add_expr . addop term
+
+    PLUS        shift, and go to state 68
+    MINUS       shift, and go to state 69
+    LESSTHEN    shift, and go to state 70
+    LESSEQUAL   shift, and go to state 71
+    GREATTHEN   shift, and go to state 72
+    GREATEQUAL  shift, and go to state 73
+    EQUAL       shift, and go to state 74
+    NOTEQUAL    shift, and go to state 75
+
+    $default  reduce using rule 39 (simple_expr)
+
+    relop  go to state 76
+    addop  go to state 77
+
+
+State 56
+
+   47 add_expr: term .
+   50 term: term . mulop factor
+
+    TIMES  shift, and go to state 78
+    OVER   shift, and go to state 79
+
+    $default  reduce using rule 47 (add_expr)
+
+    mulop  go to state 80
+
+
+State 57
+
+   51 term: factor .
+
+    $default  reduce using rule 51 (term)
+
+
+State 58
+
+   56 factor: call .
+
+    $default  reduce using rule 56 (factor)
+
+
+State 59
+
+   36 var: id_node .
+   37    | id_node . LBRACKET expr RBRACKET
+   58 call: id_node . LPAREN args RPAREN
+
+    LPAREN    shift, and go to state 81
+    LBRACKET  shift, and go to state 82
+
+    $default  reduce using rule 36 (var)
+
+
+State 60
+
+   57 factor: num_node .
+
+    $default  reduce using rule 57 (factor)
+
+
+State 61
+
+   29 select_stmt: IF LPAREN . expr RPAREN stmt
+   30            | IF LPAREN . expr RPAREN stmt ELSE stmt
+
+    ID      shift, and go to state 11
+    NUM     shift, and go to state 21
+    LPAREN  shift, and go to state 44
+
+    expr         go to state 83
+    var          go to state 53
+    simple_expr  go to state 54
+    add_expr     go to state 55
+    term         go to state 56
+    factor       go to state 57
+    call         go to state 58
+    id_node      go to state 59
+    num_node     go to state 60
+
+
+State 62
+
+   32 return_stmt: RETURN SEMICOLON .
+
+    $default  reduce using rule 32 (return_stmt)
+
+
+State 63
+
+   33 return_stmt: RETURN expr . SEMICOLON
+
+    SEMICOLON  shift, and go to state 84
+
+
+State 64
+
+   31 iter_stmt: WHILE LPAREN . expr RPAREN stmt
+
+    ID      shift, and go to state 11
+    NUM     shift, and go to state 21
+    LPAREN  shift, and go to state 44
+
+    expr         go to state 85
+    var          go to state 53
+    simple_expr  go to state 54
+    add_expr     go to state 55
+    term         go to state 56
+    factor       go to state 57
+    call         go to state 58
+    id_node      go to state 59
+    num_node     go to state 60
+
+
+State 65
+
+   54 factor: LPAREN expr . RPAREN
+
+    RPAREN  shift, and go to state 86
+
+
+State 66
+
+   27 expr_stmt: expr SEMICOLON .
+
+    $default  reduce using rule 27 (expr_stmt)
+
+
+State 67
+
+   34 expr: var ASSIGN . expr
+
+    ID      shift, and go to state 11
+    NUM     shift, and go to state 21
+    LPAREN  shift, and go to state 44
+
+    expr         go to state 87
+    var          go to state 53
+    simple_expr  go to state 54
+    add_expr     go to state 55
+    term         go to state 56
+    factor       go to state 57
+    call         go to state 58
+    id_node      go to state 59
+    num_node     go to state 60
+
+
+State 68
+
+   48 addop: PLUS .
+
+    $default  reduce using rule 48 (addop)
+
+
+State 69
+
+   49 addop: MINUS .
+
+    $default  reduce using rule 49 (addop)
+
+
+State 70
+
+   40 relop: LESSTHEN .
+
+    $default  reduce using rule 40 (relop)
+
+
+State 71
+
+   41 relop: LESSEQUAL .
+
+    $default  reduce using rule 41 (relop)
+
+
+State 72
+
+   42 relop: GREATTHEN .
+
+    $default  reduce using rule 42 (relop)
+
+
+State 73
+
+   43 relop: GREATEQUAL .
+
+    $default  reduce using rule 43 (relop)
+
+
+State 74
+
+   44 relop: EQUAL .
+
+    $default  reduce using rule 44 (relop)
+
+
+State 75
+
+   45 relop: NOTEQUAL .
+
+    $default  reduce using rule 45 (relop)
+
+
+State 76
+
+   38 simple_expr: add_expr relop . add_expr
+
+    ID      shift, and go to state 11
+    NUM     shift, and go to state 21
+    LPAREN  shift, and go to state 44
+
+    var       go to state 88
+    add_expr  go to state 89
+    term      go to state 56
+    factor    go to state 57
+    call      go to state 58
+    id_node   go to state 59
+    num_node  go to state 60
+
+
+State 77
+
+   46 add_expr: add_expr addop . term
+
+    ID      shift, and go to state 11
+    NUM     shift, and go to state 21
+    LPAREN  shift, and go to state 44
+
+    var       go to state 88
+    term      go to state 90
+    factor    go to state 57
+    call      go to state 58
+    id_node   go to state 59
+    num_node  go to state 60
+
+
+State 78
+
+   52 mulop: TIMES .
+
+    $default  reduce using rule 52 (mulop)
+
+
+State 79
+
+   53 mulop: OVER .
+
+    $default  reduce using rule 53 (mulop)
+
+
+State 80
+
+   50 term: term mulop . factor
+
+    ID      shift, and go to state 11
+    NUM     shift, and go to state 21
+    LPAREN  shift, and go to state 44
+
+    var       go to state 88
+    factor    go to state 91
+    call      go to state 58
+    id_node   go to state 59
+    num_node  go to state 60
+
+
+State 81
+
+   58 call: id_node LPAREN . args RPAREN
+
+    ID      shift, and go to state 11
+    NUM     shift, and go to state 21
+    LPAREN  shift, and go to state 44
+
+    $default  reduce using rule 65 (empty)
+
+    expr         go to state 92
+    var          go to state 53
+    simple_expr  go to state 54
+    add_expr     go to state 55
+    term         go to state 56
+    factor       go to state 57
+    call         go to state 58
+    args         go to state 93
+    arg_list     go to state 94
+    id_node      go to state 59
+    num_node     go to state 60
+    empty        go to state 95
+
+
+State 82
+
+   37 var: id_node LBRACKET . expr RBRACKET
+
+    ID      shift, and go to state 11
+    NUM     shift, and go to state 21
+    LPAREN  shift, and go to state 44
+
+    expr         go to state 96
+    var          go to state 53
+    simple_expr  go to state 54
+    add_expr     go to state 55
+    term         go to state 56
+    factor       go to state 57
+    call         go to state 58
+    id_node      go to state 59
+    num_node     go to state 60
+
+
+State 83
+
+   29 select_stmt: IF LPAREN expr . RPAREN stmt
+   30            | IF LPAREN expr . RPAREN stmt ELSE stmt
+
+    RPAREN  shift, and go to state 97
+
+
+State 84
+
+   33 return_stmt: RETURN expr SEMICOLON .
+
+    $default  reduce using rule 33 (return_stmt)
+
+
+State 85
+
+   31 iter_stmt: WHILE LPAREN expr . RPAREN stmt
+
+    RPAREN  shift, and go to state 98
+
+
+State 86
+
+   54 factor: LPAREN expr RPAREN .
+
+    $default  reduce using rule 54 (factor)
+
+
+State 87
+
+   34 expr: var ASSIGN expr .
+
+    $default  reduce using rule 34 (expr)
+
+
+State 88
+
+   55 factor: var .
+
+    $default  reduce using rule 55 (factor)
+
+
+State 89
+
+   38 simple_expr: add_expr relop add_expr .
+   46 add_expr: add_expr . addop term
+
+    PLUS   shift, and go to state 68
+    MINUS  shift, and go to state 69
+
+    $default  reduce using rule 38 (simple_expr)
+
+    addop  go to state 77
+
+
+State 90
+
+   46 add_expr: add_expr addop term .
+   50 term: term . mulop factor
+
+    TIMES  shift, and go to state 78
+    OVER   shift, and go to state 79
+
+    $default  reduce using rule 46 (add_expr)
+
+    mulop  go to state 80
+
+
+State 91
+
+   50 term: term mulop factor .
+
+    $default  reduce using rule 50 (term)
+
+
+State 92
+
+   62 arg_list: expr .
+
+    $default  reduce using rule 62 (arg_list)
+
+
+State 93
+
+   58 call: id_node LPAREN args . RPAREN
+
+    RPAREN  shift, and go to state 99
+
+
+State 94
+
+   59 args: arg_list .
+   61 arg_list: arg_list . COMMA expr
+
+    COMMA  shift, and go to state 100
+
+    $default  reduce using rule 59 (args)
+
+
+State 95
+
+   60 args: empty .
+
+    $default  reduce using rule 60 (args)
+
+
+State 96
+
+   37 var: id_node LBRACKET expr . RBRACKET
+
+    RBRACKET  shift, and go to state 101
+
+
+State 97
+
+   29 select_stmt: IF LPAREN expr RPAREN . stmt
+   30            | IF LPAREN expr RPAREN . stmt ELSE stmt
+
+    IF         shift, and go to state 40
+    RETURN     shift, and go to state 41
+    WHILE      shift, and go to state 42
+    ID         shift, and go to state 11
+    NUM        shift, and go to state 21
+    SEMICOLON  shift, and go to state 43
+    LPAREN     shift, and go to state 44
+    LBRACE     shift, and go to state 28
+
+    comp_stmt    go to state 46
+    stmt         go to state 102
+    expr_stmt    go to state 48
+    select_stmt  go to state 49
+    iter_stmt    go to state 50
+    return_stmt  go to state 51
+    expr         go to state 52
+    var          go to state 53
+    simple_expr  go to state 54
+    add_expr     go to state 55
+    term         go to state 56
+    factor       go to state 57
+    call         go to state 58
+    id_node      go to state 59
+    num_node     go to state 60
+
+
+State 98
+
+   31 iter_stmt: WHILE LPAREN expr RPAREN . stmt
+
+    IF         shift, and go to state 40
+    RETURN     shift, and go to state 41
+    WHILE      shift, and go to state 42
+    ID         shift, and go to state 11
+    NUM        shift, and go to state 21
+    SEMICOLON  shift, and go to state 43
+    LPAREN     shift, and go to state 44
+    LBRACE     shift, and go to state 28
+
+    comp_stmt    go to state 46
+    stmt         go to state 103
+    expr_stmt    go to state 48
+    select_stmt  go to state 49
+    iter_stmt    go to state 50
+    return_stmt  go to state 51
+    expr         go to state 52
+    var          go to state 53
+    simple_expr  go to state 54
+    add_expr     go to state 55
+    term         go to state 56
+    factor       go to state 57
+    call         go to state 58
+    id_node      go to state 59
+    num_node     go to state 60
+
+
+State 99
+
+   58 call: id_node LPAREN args RPAREN .
+
+    $default  reduce using rule 58 (call)
+
+
+State 100
+
+   61 arg_list: arg_list COMMA . expr
+
+    ID      shift, and go to state 11
+    NUM     shift, and go to state 21
+    LPAREN  shift, and go to state 44
+
+    expr         go to state 104
+    var          go to state 53
+    simple_expr  go to state 54
+    add_expr     go to state 55
+    term         go to state 56
+    factor       go to state 57
+    call         go to state 58
+    id_node      go to state 59
+    num_node     go to state 60
+
+
+State 101
+
+   37 var: id_node LBRACKET expr RBRACKET .
+
+    $default  reduce using rule 37 (var)
+
+
+State 102
+
+   29 select_stmt: IF LPAREN expr RPAREN stmt .
+   30            | IF LPAREN expr RPAREN stmt . ELSE stmt
+
+    ELSE  shift, and go to state 105
+
+    $default  reduce using rule 29 (select_stmt)
+
+
+State 103
+
+   31 iter_stmt: WHILE LPAREN expr RPAREN stmt .
+
+    $default  reduce using rule 31 (iter_stmt)
+
+
+State 104
+
+   61 arg_list: arg_list COMMA expr .
+
+    $default  reduce using rule 61 (arg_list)
+
+
+State 105
+
+   30 select_stmt: IF LPAREN expr RPAREN stmt ELSE . stmt
+
+    IF         shift, and go to state 40
+    RETURN     shift, and go to state 41
+    WHILE      shift, and go to state 42
+    ID         shift, and go to state 11
+    NUM        shift, and go to state 21
+    SEMICOLON  shift, and go to state 43
+    LPAREN     shift, and go to state 44
+    LBRACE     shift, and go to state 28
+
+    comp_stmt    go to state 46
+    stmt         go to state 106
+    expr_stmt    go to state 48
+    select_stmt  go to state 49
+    iter_stmt    go to state 50
+    return_stmt  go to state 51
+    expr         go to state 52
+    var          go to state 53
+    simple_expr  go to state 54
+    add_expr     go to state 55
+    term         go to state 56
+    factor       go to state 57
+    call         go to state 58
+    id_node      go to state 59
+    num_node     go to state 60
+
+
+State 106
+
+   30 select_stmt: IF LPAREN expr RPAREN stmt ELSE stmt .
+
+    $default  reduce using rule 30 (select_stmt)
