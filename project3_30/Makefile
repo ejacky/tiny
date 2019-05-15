@@ -10,9 +10,9 @@ CFLAGS = -g
 OBJS = hw3.tab.o lex.yy.o main.o util.o analyze.o symtab.o 
 
 project3_30: $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o 20130523
+	$(CC) $(CFLAGS) $(OBJS) -o project3_30
 
-main.o: main.c globals.h util.h scan.h parse.h analyze.h
+main.o: main.c globals.h util.h scan.h parse.h analyze.h 
 	$(CC) $(CFLAGS) -c main.c
 
 analyze.o: analyze.c analyze.h globals.h symtab.h
@@ -31,7 +31,7 @@ lex.yy.o: hw3.l scan.h util.h globals.h
 	flex -o lex.yy.c hw3.l
 	$(CC) $(CFLAGS) -c lex.yy.c
 
-hw3.tab.o: hw3.y globals.h
+hw3.tab.o: hw3.y globals.h 
 	bison -d hw3.y 
 	$(CC) $(CFLAGS) -c hw3.tab.c
 

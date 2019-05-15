@@ -10,6 +10,7 @@
 #define _SYMTAB_H_
 
 #include "globals.h"
+#include "hw3.tab.h"
 
 /* Procedure st_insert inserts line numbers and
  * memory locations into the symbol table

@@ -31,6 +31,47 @@ static int hash ( char * key )
   return temp;
 }
 
+
+// Token to string
+
+char* TTS[] = 
+{
+    [ENDFILE] = "ENDFILE",
+    [ERROR] = "ERROR",
+    [COMMENT] = "COMMENT",
+    [COMMENT_ERROR] = "COMMENT_ERROR",
+    [ELSE] = "ELSE",
+    [IF] = "IF",
+    [INT] = "INT",
+    [RETURN] = "RETURN",
+    [VOID] = "VOID",
+    [WHILE] = "WHILE",
+    [ID] = "ID",
+    [NUM] = "NUM",
+    [PLUS] = "PLUS",
+    [MINUS] = "MINUS",
+    [TIMES] = "TIMES",
+    [OVER] = "OVER",
+    [LT] = "LT",
+    [LTEQ] = "LTEQ",
+    [GT] = "GT",
+    [GTEQ] = "GTEQ",
+    [EQ] = "EQ",
+    [NEQ] = "NEQ",
+    [ASSIGN] = "ASSIGN",
+    [SEMI] = "SEMI",
+    [COMMA] = "COMMA",
+    [LPAREN] = "LPAREN",
+    [RPAREN] = "RPAREN",
+    [LBRACK] = "LBRACK",
+    [RBRACK] = "RBRACK",
+    [LBRACE] = "LBRACE",
+    [RBRACE] = "RBRACE"
+};
+
+
+
+
 /* the list of line numbers of the source 
  * code in which a variable is referenced
  */
@@ -120,7 +161,7 @@ void printSymTab(FILE * listing)
       { LineList t = l->lines;
         fprintf(listing,"%-14s ",l->name);
         fprintf(listing,"%-8d  ",l->memloc);
-        fprintf(listing,"%-4d  ",l->node->type);
+        fprintf(listing,"%-5s  ",TTS[l->node->type]);
         while (t != NULL)
         { fprintf(listing,"%4d ",t->lineno);
           t = t->next;
