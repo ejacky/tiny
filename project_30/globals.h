@@ -78,6 +78,42 @@ typedef struct arrayAttr {
     int size;
 } ArrayAttr;
 
+// Token to string
+
+char* TokenTypetoString [] = 
+{
+    [ENDFILE] = "ENDFILE",
+    [ERROR] = "ERROR",
+    [COMMENT] = "COMMENT",
+    [COMMENT_ERROR] = "COMMENT_ERROR",
+    [ELSE] = "ELSE",
+    [IF] = "IF",
+    [INT] = "INT",
+    [RETURN] = "RETURN",
+    [VOID] = "VOID",
+    [WHILE] = "WHILE",
+    [ID] = "ID",
+    [NUM] = "NUM",
+    [PLUS] = "PLUS",
+    [MINUS] = "MINUS",
+    [TIMES] = "TIMES",
+    [OVER] = "OVER",
+    [LESSTHEN] = "LESSTHEN",
+    [LESSEQUAL] = "LESSEQUAL",
+    [GREATTHEN] = "GREATTHEN",
+    [GREATEQUAL] = "GREATEQUAL",
+    [EQUAL] = "EQUAL",
+    [NOTEQUAL] = "NOTEQUAL",
+    [ASSIGN] = "ASSIGN",
+    [SEMICOLON] = "SEMICOLON",
+    [COMMA] = "COMMA",
+    [LPAREN] = "LPAREN",
+    [RPAREN] = "RPAREN",
+    [LBRACKET] = "LBRACKET",
+    [RBRACKET] = "RBRACKET",
+    [LBRACE] = "LBRACE",
+    [RBRACE] = "RBRACE"
+};
 
 #define MAXCHILDREN 3
 
