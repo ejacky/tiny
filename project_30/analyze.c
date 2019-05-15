@@ -46,6 +46,7 @@ static void nullProc(TreeNode * t)
  * the symbol table 
  */
 //TODO tiny -> C-
+//여기서 해시테이블의 요소에 노드 정보를 같이 받아야함.
 static void insertNode( TreeNode * t)
 { switch (t->nodekind)
   { case StmtK:
@@ -73,21 +74,21 @@ static void insertNode( TreeNode * t)
       { case IdK:
           if (st_lookup(t->attr.name) == -1)
           /* not yet in table, so treat as new definition */
-            st_insert(t->attr.name,t->lineno,location++);
+            st_insert(t->attr.name,t->lineno,location++,t);
           else
           /* already in table, so ignore location, 
              add line number of use only */ 
-            st_insert(t->attr.name,t->lineno,0);
+            st_insert(t->attr.name,t->lineno,0,t);
           break;
         // Array는 별도의 id kind를 지님.
         case ArrIdK:
           if (st_lookup(t->attr.arr.name) == -1)
           /* not yet in table, so treat as new definition */
-            st_insert(t->attr.arr.name,t->lineno,location++);
+            st_insert(t->attr.arr.name,t->lineno,location++,t);
           else
           /* already in table, so ignore location, 
              add line number of use only */ 
-            st_insert(t->attr.arr.name,t->lineno,0);
+            st_insert(t->attr.arr.name,t->lineno,0,t);
           break;
 
           break;

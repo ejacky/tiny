@@ -45,14 +45,18 @@ typedef struct LineListRec
  * the list of line numbers in which
  * it appears in the source code
  */
+// TODO scope를 관리할수 있게 끔 수정.
 typedef struct BucketListRec
    { char * name;
      LineList lines;
      int memloc ; /* memory location for variable */
      struct BucketListRec * next;
+     // 타입 체크를 위한 노드 정보
+     TreeNode *node;
    } * BucketList;
 
 /* the hash table */
+// TODO 각각의 테이블들이 스코프별로 존재.
 static BucketList hashTable[SIZE];
 
 /* Procedure st_insert inserts line numbers and
@@ -60,7 +64,8 @@ static BucketList hashTable[SIZE];
  * loc = memory location is inserted only the
  * first time, otherwise ignored
  */
-void st_insert( char * name, int lineno, int loc )
+// TODO 변화에 따라 수정.
+void st_insert( char * name, int lineno, int loc ,TreeNode *t)
 { int h = hash(name);
   BucketList l =  hashTable[h];
   while ((l != NULL) && (strcmp(name,l->name) != 0))
@@ -73,7 +78,12 @@ void st_insert( char * name, int lineno, int loc )
     l->memloc = loc;
     l->lines->next = NULL;
     l->next = hashTable[h];
-    hashTable[h] = l; }
+ 
+    l->node = t;
+
+    hashTable[h] = l; 
+  
+  }
   else /* found in table, so just add line number */
   { LineList t = l->lines;
     while (t->next != NULL) t = t->next;
@@ -101,8 +111,8 @@ int st_lookup ( char * name )
  */
 void printSymTab(FILE * listing)
 { int i;
-  fprintf(listing,"Variable Name  Location   Line Numbers\n");
-  fprintf(listing,"-------------  --------   ------------\n");
+  fprintf(listing,"Variable Name  Location Type   Line Numbers\n");
+  fprintf(listing,"-------------  -------- ----   ------------\n");
   for (i=0;i<SIZE;++i)
   { if (hashTable[i] != NULL)
     { BucketList l = hashTable[i];
@@ -110,6 +120,7 @@ void printSymTab(FILE * listing)
       { LineList t = l->lines;
         fprintf(listing,"%-14s ",l->name);
         fprintf(listing,"%-8d  ",l->memloc);
+        fprintf(listing,"%-4d  ",l->node->type);
         while (t != NULL)
         { fprintf(listing,"%4d ",t->lineno);
           t = t->next;

@@ -18,7 +18,7 @@ main.o: main.c globals.h util.h scan.h parse.h analyze.h
 analyze.o: analyze.c analyze.h globals.h symtab.h
 	$(CC) $(CFLAGS) -c analyze.c
 
-symtab.o: symtab.c symtab.h
+symtab.o: symtab.c symtab.h globals.h
 	$(CC) $(CFLAGS) -c symtab.c
 
 util.o: util.c util.h globals.h
