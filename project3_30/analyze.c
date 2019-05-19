@@ -71,7 +71,8 @@ static void insertNode( TreeNode * t)
       break;
     case ExpK:
       switch (t->kind.exp)
-      { case IdK:
+      { 
+        case IdK:
           if (st_lookup(t->attr.name) == -1)
           /* not yet in table, so treat as new definition */
             st_insert(t->attr.name,t->lineno,location++,t);
@@ -90,12 +91,36 @@ static void insertNode( TreeNode * t)
              add line number of use only */ 
             st_insert(t->attr.arr.name,t->lineno,0,t);
           break;
-
+        case CallK:
+          break;
+        case AssignK:
           break;
         default:
           break;
       }
       break;
+    case DeclK:
+      switch(t->kind.decl){
+        case VarK:
+          break;
+        case ArrVarK:
+          break;
+        case FuncK:
+          break;
+        default : 
+          break;
+      
+      }
+   case ParamK:
+      switch(t->kind.param){
+        case NonArrParamK:
+          break;
+        case ArrParamK:
+          break;
+        default:
+          break;
+      }
+     break; 
     default:
       break;
   }
