@@ -20,17 +20,6 @@
    in hash function  */
 #define SHIFT 4
 
-/* the hash function */
-static int hash ( char * key )
-{ int temp = 0;
-  int i = 0;
-  while (key[i] != '\0')
-  { temp = ((temp << SHIFT) + key[i]) % SIZE;
-    ++i;
-  }
-  return temp;
-}
-
 
 // Token to string
 
@@ -68,6 +57,24 @@ char* TTS[] =
     [LBRACE] = "LBRACE",
     [RBRACE] = "RBRACE"
 };
+
+
+
+
+
+/* the hash function */
+static int hash ( char * key )
+{ int temp = 0;
+  int i = 0;
+#if DEBUG
+//  printf("hash(%s)\n",key);
+#endif
+  while (key[i] != '\0'){
+    temp = ((temp << SHIFT) + key[i]) % SIZE;
+    ++i;
+  }
+  return temp;
+}
 
 
 
@@ -126,7 +133,8 @@ void st_insert( char * name, int lineno, int loc ,TreeNode *t)
   
   }
   else /* found in table, so just add line number */
-  { LineList t = l->lines;
+  {
+    LineList t = l->lines;
     while (t->next != NULL) t = t->next;
     t->next = (LineList) malloc(sizeof(struct LineListRec));
     t->next->lineno = lineno;

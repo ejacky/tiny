@@ -15,6 +15,8 @@
 #include <ctype.h>
 #include <string.h>
 
+#define DEBUG 1
+
 /* Yacc/Bison generates internally its own values
  * for the tokens. Other files can access these values
  * by including the tab.h file generated using the
