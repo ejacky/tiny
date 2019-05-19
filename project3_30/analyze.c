@@ -73,13 +73,18 @@ static void insertNode( TreeNode * t)
       switch (t->kind.exp)
       { 
         case IdK:
-          if (st_lookup(t->attr.name) == -1)
-          /* not yet in table, so treat as new definition */
+          if (st_lookup(t->attr.name) == -1){
+#if DEBUG
+            printf("%s : ExpK id \n",t->attr.name);
+#endif
             st_insert(t->attr.name,t->lineno,location++,t);
-          else
-          /* already in table, so ignore location, 
-             add line number of use only */ 
+          }
+          else{
+#if DEBUG
+            printf("%s : ExpK id \n",t->attr.name);
+#endif
             st_insert(t->attr.name,t->lineno,0,t);
+          }
           break;
         // Array는 별도의 id kind를 지님.
         case ArrIdK:
@@ -102,6 +107,13 @@ static void insertNode( TreeNode * t)
     case DeclK:
       switch(t->kind.decl){
         case VarK:
+#if DEBUG
+          printf("%s : DeclK Var \n",t->attr.name);
+#endif
+           if (st_lookup(t->attr.arr.name) == -1)
+            st_insert(t->attr.arr.name,t->lineno,location++,t);
+          else
+            st_insert(t->attr.arr.name,t->lineno,0,t);
           break;
         case ArrVarK:
           break;

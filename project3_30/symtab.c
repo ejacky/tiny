@@ -112,10 +112,13 @@ static BucketList hashTable[SIZE];
  * loc = memory location is inserted only the
  * first time, otherwise ignored
  */
+
 // TODO 변화에 따라 수정.
 void st_insert( char * name, int lineno, int loc ,TreeNode *t)
 { int h = hash(name);
   BucketList l =  hashTable[h];
+
+
   while ((l != NULL) && (strcmp(name,l->name) != 0))
     l = l->next;
   if (l == NULL) /* variable not yet in table */
@@ -140,7 +143,23 @@ void st_insert( char * name, int lineno, int loc ,TreeNode *t)
     t->next->lineno = lineno;
     t->next->next = NULL;
   }
+  //
+  /*
+  switch(t->nodekind){
+    case DeclK:
+      printf("AA\n");
+    l->node->type = t->attr.type;
+      break;
+    case ParamK:
+      break;
+    default:
+      break;
+  }
+  */
+
 } /* st_insert */
+
+
 
 /* Function st_lookup returns the memory 
  * location of a variable or -1 if not found
