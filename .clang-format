@@ -1,0 +1,9 @@
+---
+BasedOnStyle: Chromium
+BreakBeforeBinaryOperators: 'false'
+BreakBeforeBraces: Allman
+IndentWidth: '4'
+SpacesInParentheses: 'true'
+
+...
+

@@ -20,88 +20,66 @@
    in hash function  */
 #define SHIFT 4
 
-
 // Token to string
 
-char* TTS[] = 
-{
-    [ENDFILE] = "ENDFILE",
-    [ERROR] = "ERROR",
-    [COMMENT] = "COMMENT",
-    [COMMENT_ERROR] = "COMMENT_ERROR",
-    [ELSE] = "ELSE",
-    [IF] = "IF",
-    [INT] = "INT",
-    [RETURN] = "RETURN",
-    [VOID] = "VOID",
-    [WHILE] = "WHILE",
-    [ID] = "ID",
-    [NUM] = "NUM",
-    [PLUS] = "PLUS",
-    [MINUS] = "MINUS",
-    [TIMES] = "TIMES",
-    [OVER] = "OVER",
-    [LT] = "LT",
-    [LTEQ] = "LTEQ",
-    [GT] = "GT",
-    [GTEQ] = "GTEQ",
-    [EQ] = "EQ",
-    [NEQ] = "NEQ",
-    [ASSIGN] = "ASSIGN",
-    [SEMI] = "SEMI",
-    [COMMA] = "COMMA",
-    [LPAREN] = "LPAREN",
-    [RPAREN] = "RPAREN",
-    [LBRACK] = "LBRACK",
-    [RBRACK] = "RBRACK",
-    [LBRACE] = "LBRACE",
-    [RBRACE] = "RBRACE"
-};
-
-
-
-
+char* TTS[] = {[ENDFILE] = "ENDFILE", [ERROR] = "ERROR",
+               [COMMENT] = "COMMENT", [COMMENT_ERROR] = "COMMENT_ERROR",
+               [ELSE] = "ELSE",       [IF] = "IF",
+               [INT] = "INT",         [RETURN] = "RETURN",
+               [VOID] = "VOID",       [WHILE] = "WHILE",
+               [ID] = "ID",           [NUM] = "NUM",
+               [PLUS] = "PLUS",       [MINUS] = "MINUS",
+               [TIMES] = "TIMES",     [OVER] = "OVER",
+               [LT] = "LT",           [LTEQ] = "LTEQ",
+               [GT] = "GT",           [GTEQ] = "GTEQ",
+               [EQ] = "EQ",           [NEQ] = "NEQ",
+               [ASSIGN] = "ASSIGN",   [SEMI] = "SEMI",
+               [COMMA] = "COMMA",     [LPAREN] = "LPAREN",
+               [RPAREN] = "RPAREN",   [LBRACK] = "LBRACK",
+               [RBRACK] = "RBRACK",   [LBRACE] = "LBRACE",
+               [RBRACE] = "RBRACE"};
 
 /* the hash function */
-static int hash ( char * key )
-{ int temp = 0;
-  int i = 0;
+static int hash( char* key )
+{
+    int temp = 0;
+    int i = 0;
 #if DEBUG
 //  printf("hash(%s)\n",key);
 #endif
-  while (key[i] != '\0'){
-    temp = ((temp << SHIFT) + key[i]) % SIZE;
-    ++i;
-  }
-  return temp;
+    while ( key[i] != '\0' )
+    {
+        temp = ( ( temp << SHIFT ) + key[i] ) % SIZE;
+        ++i;
+    }
+    return temp;
 }
 
-
-
-
-/* the list of line numbers of the source 
+/* the list of line numbers of the source
  * code in which a variable is referenced
  */
 typedef struct LineListRec
-   { int lineno;
-     struct LineListRec * next;
-   } * LineList;
+{
+    int lineno;
+    struct LineListRec* next;
+} * LineList;
 
 /* The record in the bucket lists for
- * each variable, including name, 
+ * each variable, including name,
  * assigned memory location, and
  * the list of line numbers in which
  * it appears in the source code
  */
 // TODO scope를 관리할수 있게 끔 수정.
 typedef struct BucketListRec
-   { char * name;
-     LineList lines;
-     int memloc ; /* memory location for variable */
-     struct BucketListRec * next;
-     // 타입 체크를 위한 노드 정보
-     TreeNode *node;
-   } * BucketList;
+{
+    char* name;
+    LineList lines;
+    int memloc; /* memory location for variable */
+    struct BucketListRec* next;
+    // 타입 체크를 위한 노드 정보
+    TreeNode* node;
+} * BucketList;
 
 /* the hash table */
 // TODO 각각의 테이블들이 스코프별로 존재.
@@ -114,88 +92,95 @@ static BucketList hashTable[SIZE];
  */
 
 // TODO 변화에 따라 수정.
-void st_insert( char * name, int lineno, int loc ,TreeNode *t)
-{ int h = hash(name);
-  BucketList l =  hashTable[h];
+void st_insert( char* name, int lineno, int loc, TreeNode* t )
+{
+    int h = hash( name );
+    BucketList l = hashTable[h];
 
+    while ( ( l != NULL ) && ( strcmp( name, l->name ) != 0 ) )
+        l = l->next;
+    if ( l == NULL ) /* variable not yet in table */
+    {
+        l = (BucketList)malloc( sizeof( struct BucketListRec ) );
+        l->name = name;
+        l->lines = (LineList)malloc( sizeof( struct LineListRec ) );
+        l->lines->lineno = lineno;
+        l->memloc = loc;
+        l->lines->next = NULL;
+        l->next = hashTable[h];
 
-  while ((l != NULL) && (strcmp(name,l->name) != 0))
-    l = l->next;
-  if (l == NULL) /* variable not yet in table */
-  { l = (BucketList) malloc(sizeof(struct BucketListRec));
-    l->name = name;
-    l->lines = (LineList) malloc(sizeof(struct LineListRec));
-    l->lines->lineno = lineno;
-    l->memloc = loc;
-    l->lines->next = NULL;
-    l->next = hashTable[h];
- 
-    l->node = t;
+        l->node = t;
 
-    hashTable[h] = l; 
-  
-  }
-  else /* found in table, so just add line number */
-  {
-    LineList t = l->lines;
-    while (t->next != NULL) t = t->next;
-    t->next = (LineList) malloc(sizeof(struct LineListRec));
-    t->next->lineno = lineno;
-    t->next->next = NULL;
-  }
-  //
-  /*
-  switch(t->nodekind){
-    case DeclK:
-      printf("AA\n");
-    l->node->type = t->attr.type;
-      break;
-    case ParamK:
-      break;
-    default:
-      break;
-  }
-  */
+        hashTable[h] = l;
+    }
+    else /* found in table, so just add line number */
+    {
+        LineList t = l->lines;
+        while ( t->next != NULL )
+            t = t->next;
+        t->next = (LineList)malloc( sizeof( struct LineListRec ) );
+        t->next->lineno = lineno;
+        t->next->next = NULL;
+    }
+    //
+    /*
+    switch(t->nodekind){
+      case DeclK:
+        printf("AA\n");
+      l->node->type = t->attr.type;
+        break;
+      case ParamK:
+        break;
+      default:
+        break;
+    }
+    */
 
 } /* st_insert */
 
-
-
-/* Function st_lookup returns the memory 
+/* Function st_lookup returns the memory
  * location of a variable or -1 if not found
  */
-int st_lookup ( char * name )
-{ int h = hash(name);
-  BucketList l =  hashTable[h];
-  while ((l != NULL) && (strcmp(name,l->name) != 0))
-    l = l->next;
-  if (l == NULL) return -1;
-  else return l->memloc;
+int st_lookup( char* name )
+{
+    int h = hash( name );
+    BucketList l = hashTable[h];
+    while ( ( l != NULL ) && ( strcmp( name, l->name ) != 0 ) )
+        l = l->next;
+    if ( l == NULL )
+        return -1;
+    else
+        return l->memloc;
 }
 
-/* Procedure printSymTab prints a formatted 
- * listing of the symbol table contents 
+/* Procedure printSymTab prints a formatted
+ * listing of the symbol table contents
  * to the listing file
  */
-void printSymTab(FILE * listing)
-{ int i;
-  fprintf(listing,"Variable Name  Location Type   Line Numbers\n");
-  fprintf(listing,"-------------  -------- ----   ------------\n");
-  for (i=0;i<SIZE;++i)
-  { if (hashTable[i] != NULL)
-    { BucketList l = hashTable[i];
-      while (l != NULL)
-      { LineList t = l->lines;
-        fprintf(listing,"%-14s ",l->name);
-        fprintf(listing,"%-8d  ",l->memloc);
-        fprintf(listing,"%-5s  ",TTS[l->node->type]);
-        while (t != NULL)
-        { fprintf(listing,"%4d ",t->lineno);
-          t = t->next;
+void printSymTab( FILE* listing )
+{
+    int i;
+    fprintf( listing, "Variable Name  Location Type   Line Numbers\n" );
+    fprintf( listing, "-------------  -------- ----   ------------\n" );
+    for ( i = 0; i < SIZE; ++i )
+    {
+        if ( hashTable[i] != NULL )
+        {
+            BucketList l = hashTable[i];
+            while ( l != NULL )
+            {
+                LineList t = l->lines;
+                fprintf( listing, "%-14s ", l->name );
+                fprintf( listing, "%-8d  ", l->memloc );
+                fprintf( listing, "%-5s  ", TTS[l->node->type] );
+                while ( t != NULL )
+                {
+                    fprintf( listing, "%4d ", t->lineno );
+                    t = t->next;
+                }
+                fprintf( listing, "\n" );
+                l = l->next;
+            }
         }
-        fprintf(listing,"\n");
-        l = l->next;
-      }
     }
-  }
 } /* printSymTab */
