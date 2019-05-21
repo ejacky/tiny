@@ -1,50 +1,43 @@
 
-Syntax tree:
-  Function Declaration
-    Type : int
-    ID : gcd
-    Parameter
-      Type : int
-      ID : u
-    Parameter
-      Type : int
-      ID : v
-    Compound
-      If
-        Op : ==
-          ID : v
-          Const: 0
-        Return
-          ID : u
-        Return
-          Call : gcd
-            ID : v
-            Op : -
-              ID : u
-              Op : *
-                Op : /
-                  ID : u
-                  ID : v
-                ID : v
-  Function Declaration
-    Type : void
-    ID : main
-    Parameter
-      Type : void
-    Compound
-      Variable Declaration
-        Type : int
-        ID : x
-      Variable Declaration
-        Type : int
-        ID : y
-      Op : =
-        ID : x
-        Call : input
-      Op : =
-        ID : y
-        Call : input
-      Call : output
-        Call : gcd
-          ID : x
-          ID : y
+Syntax tree
+    : Function Declaration Type
+      : int ID
+        : gcd Parameter Type
+          : int ID
+            : u Parameter Type
+              : int ID
+                : v Compound If Op
+                  : ==
+                    ID : v Const : 0 Return ID
+                         : u Return Call
+                           : gcd ID
+                             : v Op
+                               : -ID
+                                 : u Op
+                                   : * Op
+                                     : /
+                                       ID
+                                       : u ID
+                                         : v ID
+                                           : v Function Declaration Type
+                                             : void ID
+                                               : main Parameter Type
+                                                 : void Compound Variable
+                                                       Declaration Type
+                                                   : int ID
+                                                     : x Variable Declaration
+                                                           Type
+                                                       : int ID
+                                                         : y Op
+                                                           : = ID
+                                                             : x Call
+                                                               : input Op
+                                                                 : = ID
+                                                                   : y Call
+                                                                     : input
+                                                                           Call
+                                                                       : output
+                                                                             Call
+                                                                         : gcd ID
+                                                                           : x ID
+                                                                             : y

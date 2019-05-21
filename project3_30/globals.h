@@ -54,9 +54,9 @@
  */
 typedef int TokenType;
 
-extern FILE* source; /* source code text file */
+extern FILE* source;  /* source code text file */
 extern FILE* listing; /* listing output text file */
-extern FILE* code; /* code text file for TM simulator */
+extern FILE* code;    /* code text file for TM simulator */
 
 extern int lineno; /* source line number for listing */
 
@@ -66,17 +66,18 @@ extern int lineno; /* source line number for listing */
 
 /* 노드 Kind  설정*/
 // TODO
-typedef enum {StmtK,ExpK,DeclK,ParamK,TypeK} NodeKind;
-typedef enum {CompK,IfK,IterK,RetK,ElseK} StmtKind;
-typedef enum {AssignK,OpK,ConstK,IdK,ArrIdK,CallK} ExpKind;
-typedef enum {FuncK,VarK,ArrVarK} DeclKind;
-typedef enum {ArrParamK,NonArrParamK} ParamKind;
-typedef enum {TypeNameK} TypeKind;
+typedef enum { StmtK, ExpK, DeclK, ParamK, TypeK } NodeKind;
+typedef enum { CompK, IfK, IterK, RetK, ElseK } StmtKind;
+typedef enum { AssignK, OpK, ConstK, IdK, ArrIdK, CallK } ExpKind;
+typedef enum { FuncK, VarK, ArrVarK } DeclKind;
+typedef enum { ArrParamK, NonArrParamK } ParamKind;
+typedef enum { TypeNameK } TypeKind;
 
 /* ArrayAttr is used for attributes for array variables */
 // TODO
-typedef struct arrayAttr {
-    char * name;
+typedef struct arrayAttr
+{
+    char* name;
     int size;
 } ArrayAttr;
 
@@ -84,23 +85,27 @@ typedef struct arrayAttr {
 
 /* TODO */
 typedef struct treeNode
-   { struct treeNode * child[MAXCHILDREN];
-     struct treeNode * sibling;
-     int lineno;
-     NodeKind nodekind;
-     union { StmtKind stmt;
-             ExpKind exp;
-             DeclKind decl;
-             ParamKind param;
-             TypeKind type; } kind;
-     union { TokenType op;
-             TokenType type;
-             int val;
-             char * name;
-             ArrayAttr arr;
-             } attr;
-     int type;
-   } TreeNode;
+{
+    struct treeNode* child[MAXCHILDREN];
+    struct treeNode* sibling;
+    int lineno;
+    NodeKind nodekind;
+    union {
+        StmtKind stmt;
+        ExpKind exp;
+        DeclKind decl;
+        ParamKind param;
+        TypeKind type;
+    } kind;
+    union {
+        TokenType op;
+        TokenType type;
+        int val;
+        char* name;
+        ArrayAttr arr;
+    } attr;
+    int type;
+} TreeNode;
 
 /**************************************************/
 /***********   Flags for tracing       ************/
