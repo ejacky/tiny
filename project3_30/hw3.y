@@ -132,6 +132,7 @@ param       : type_spec saveName
                    /*$$->child[0] = $1;*/
                    $$->type = $1->attr.type;
                    $$->attr.name = savedName;
+                   $$->lineno = lineno;
                  }
             | type_spec saveName
               LBRACK RBRACK
@@ -140,6 +141,7 @@ param       : type_spec saveName
                    $$->type = $1->attr.type;
                    $$->attr.arr.name = savedName;
                    $$->attr.arr.size = 0;
+                   $$->lineno = lineno;
                  }
             ;
 comp_stmt   : LBRACE local_decls stmt_list RBRACE
