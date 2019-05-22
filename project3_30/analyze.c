@@ -127,6 +127,11 @@ static void insertNode( TreeNode* t )
                         st_insert( t->attr.arr.name, t->lineno, 0, t );
                     break;
                 case ArrVarK:
+                    if ( st_lookup( t->attr.arr.name ) == -1 )
+                        st_insert( t->attr.arr.name, t->lineno, location++, t );
+                    else
+                        st_insert( t->attr.arr.name, t->lineno, 0, t );
+ 
                     break;
                 case FuncK:
                     break;
@@ -137,8 +142,19 @@ static void insertNode( TreeNode* t )
             switch ( t->kind.param )
             {
                 case NonArrParamK:
+                    // null 은 거름
+                    if(t->type == VOID)break;
+
+                    if ( st_lookup( t->attr.arr.name ) == -1 )
+                        st_insert( t->attr.arr.name, t->lineno, location++, t );
+                    else
+                        st_insert( t->attr.arr.name, t->lineno, 0, t );
                     break;
                 case ArrParamK:
+                    if ( st_lookup( t->attr.arr.name ) == -1 )
+                        st_insert( t->attr.arr.name, t->lineno, location++, t );
+                    else
+                        st_insert( t->attr.arr.name, t->lineno, 0, t );
                     break;
                 default:
                     break;
