@@ -205,12 +205,13 @@ void printSymTab( FILE* listing )
                         fprintf( listing, "%-6s  ", "error" );
                         break;
                     }
+                    break;
                 case ParamK:
-                        fprintf( listing, "%-6s  ", "Param" );
-                        break;
+                    fprintf( listing, "%-6s  ", "Param" );
+                    break;
                 default:
-                        fprintf( listing, "%-6s  ", "error" );
-                        break;
+                    fprintf( listing, "%-6s  ", "error" );
+                    break;
                 }
 
                 // Array? print
