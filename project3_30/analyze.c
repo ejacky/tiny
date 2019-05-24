@@ -248,7 +248,7 @@ static void checkNode( TreeNode* t )
                         typeError(t,"Compound Statement must have an Element?");
 #if DEBUG
                     else
-                        typeError(t,"Test message");
+                        // fprintf( listing, "Test Compound at %d\n", t->lineno );
 #endif
                     break;
                 case IfK:
@@ -263,6 +263,11 @@ static void checkNode( TreeNode* t )
             switch(t->kind.exp)
             {
                 case AssignK:
+                    //if( t->child[0]->type != Intea ||
+                        //t->child[1]->type != Int)
+#if DEBUG
+                    fprintf( listing, "Test %d, type : %d\n", t->lineno, t->child[0]->type );
+#endif
                 case OpK:
                 case ConstK:
                 case IdK:

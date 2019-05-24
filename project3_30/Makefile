@@ -5,7 +5,7 @@
 
 CC = gcc
 
-CFLAGS = -g -pg
+CFLAGS = -g
 
 OBJS = hw3.tab.o lex.yy.o main.o util.o analyze.o symtab.o 
 
