@@ -39,17 +39,17 @@ char* TTS[] = {[ENDFILE] = "ENDFILE", [ERROR] = "ERROR",
                [RBRACK] = "RBRACK",   [LBRACE] = "LBRACE",
                [RBRACE] = "RBRACE"};
 
-#define _YES_ARR(x) \
-{\
-fprintf( listing, "%-6s  ", "Yes" );\
-fprintf( listing, "%-6d  ", x );\
-}
+#define _YES_ARR( x )                        \
+    {                                        \
+        fprintf( listing, "%-6s  ", "Yes" ); \
+        fprintf( listing, "%-6d  ", x );     \
+    }
 
-#define _NO_ARR \
-{\
-fprintf( listing, "%-6s  ", "No" );\
-fprintf( listing, "%-6s  ", "" );\
-}
+#define _NO_ARR                             \
+    {                                       \
+        fprintf( listing, "%-6s  ", "No" ); \
+        fprintf( listing, "%-6s  ", "" );   \
+    }
 
 /* the hash function */
 static int hash( char* key )
@@ -57,7 +57,7 @@ static int hash( char* key )
     int temp = 0;
     int i = 0;
 #if DEBUG
-  printf("hash(%s)\n",key);
+    printf( "hash(%s)\n", key );
 #endif
 
     while ( key[i] != '\0' )
@@ -173,8 +173,12 @@ int st_lookup( char* name )
 void printSymTab( FILE* listing )
 {
     int i;
-    fprintf( listing, "Variable Name  Location  v/p/f  Array?  ArrSize  Type   Line Numbers\n" );
-    fprintf( listing, "--------------------------------------------------------------------\n" );
+    fprintf( listing,
+             "Variable Name  Location  v/p/f  Array?  ArrSize  Type   Line "
+             "Numbers\n" );
+    fprintf( listing,
+             "-----------------------------------------------------------------"
+             "---\n" );
     for ( i = 0; i < SIZE; ++i )
     {
         if ( hashTable[i] != NULL )
@@ -185,26 +189,53 @@ void printSymTab( FILE* listing )
                 LineList t = l->lines;
                 fprintf( listing, "%-14s ", l->name );
                 fprintf( listing, "%-8d  ", l->memloc );
-                fprintf( listing, "%-6s  ", "v/p/f" );
-                switch(l->node->nodekind){
-                  case ExpK:
-                    if(l->node->kind.exp == ArrIdK)
-                      _YES_ARR(l->node->attr.arr.size)
-                    else
-                      _NO_ARR
-                    break;
-                  case DeclK:
-                    if(l->node->kind.decl == ArrVarK)
-                      _YES_ARR(l->node->attr.arr.size)
-                    else
-                      _NO_ARR
-                    break;
-                  case ParamK:
-                    if(l->node->kind.param ==  ArrParamK)
-                      _YES_ARR(l->node->attr.arr.size)
-                    else
-                      _NO_ARR
-                    break;
+
+                // V/P/F print
+                switch(l->node->nodekind) {
+                case DeclK:
+                    switch(l->node->kind.exp) {
+                    case ArrVarK:
+                    case VarK:
+                        fprintf( listing, "%-6s  ", "Var" );
+                        break;
+                    case FuncK:
+                        fprintf( listing, "%-6s  ", "Func" );
+                        break;
+                    default:
+                        fprintf( listing, "%-6s  ", "error" );
+                        break;
+                    }
+                case ParamK:
+                        fprintf( listing, "%-6s  ", "Param" );
+                        break;
+                default:
+                        fprintf( listing, "%-6s  ", "error" );
+                        break;
+                }
+
+                // Array? print
+                switch ( l->node->nodekind )
+                {
+                    case ExpK:
+                        if ( l->node->kind.exp == ArrIdK )
+                            _YES_ARR( l->node->attr.arr.size )
+                        else
+                            _NO_ARR
+                        break;
+                    case DeclK:
+                        if ( l->node->kind.decl == ArrVarK )
+                            _YES_ARR( l->node->attr.arr.size )
+                        else
+                            _NO_ARR
+                        break;
+                    case ParamK:
+                        if ( l->node->kind.param == ArrParamK )
+                            _YES_ARR( l->node->attr.arr.size )
+                        else
+                            _NO_ARR
+                        break;
+                    default:
+                        break;
                 }
                 fprintf( listing, "%-5s  ", TTS[l->node->type] );
                 while ( t != NULL )

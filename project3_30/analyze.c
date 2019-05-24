@@ -131,7 +131,7 @@ static void insertNode( TreeNode* t )
                         st_insert( t->attr.arr.name, t->lineno, location++, t );
                     else
                         st_insert( t->attr.arr.name, t->lineno, 0, t );
- 
+
                     break;
                 case FuncK:
                     break;
@@ -143,7 +143,8 @@ static void insertNode( TreeNode* t )
             {
                 case NonArrParamK:
                     // null 은 거름
-                    if(t->type == VOID)break;
+                    if ( t->type == VOID )
+                        break;
 
                     if ( st_lookup( t->attr.arr.name ) == -1 )
                         st_insert( t->attr.arr.name, t->lineno, location++, t );
@@ -238,6 +239,69 @@ static void checkNode( TreeNode* t )
 
     }
     */
+    switch(t->nodekind)
+    {
+        case StmtK:
+            switch(t->kind.stmt){
+                case CompK:
+                    if ( t->child[0] == NULL && t->child[1] == NULL )
+                        typeError(t,"Compound Statement must have an Element?");
+#if DEBUG
+                    else
+                        typeError(t,"Test message");
+#endif
+                    break;
+                case IfK:
+                case IterK:
+                case RetK:
+                case ElseK:
+                default:
+                    break; // for Fallback, Never entered in normal code
+            }
+            break;
+        case ExpK:
+            switch(t->kind.exp)
+            {
+                case AssignK:
+                case OpK:
+                case ConstK:
+                case IdK:
+                case ArrIdK:
+                case CallK:
+                default:
+                    break; // for Fallback, Never entered in normal code
+            }
+            break;
+        case DeclK:
+            switch(t->kind.decl)
+            {
+                case FuncK:
+                case VarK:
+                case ArrVarK:
+                default:
+                    break; // for Fallback, Never entered in normal code
+            }
+            break;
+        case ParamK:
+            switch(t->kind.param)
+            {
+                case ArrParamK:
+                case NonArrParamK:
+                default:
+                    break; // for Fallback, Never entered in normal code
+            }
+            break;
+        case TypeK:
+            switch(t->kind.type)
+            {
+                case TypeNameK:
+                default:
+                    break; // for Fallback, Never entered in normal code
+            }
+            break;
+        default: // for Fallback, Never entered in normal code
+            break;
+    }
 }
 
 /* Procedure typeCheck performs type checking
