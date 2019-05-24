@@ -30,3 +30,8 @@ lex.yy.o: hw3.l scan.h util.h globals.h
 hw3.tab.o: hw3.y globals.h 
 	bison -d hw3.y 
 	$(CC) $(CFLAGS) -c hw3.tab.c
+
+.PHONY: clean
+
+clean:
+	rm -f $(OBJS) lex.yy.c hw3.tab.c hw3.tab.h project3_30
