@@ -13,8 +13,8 @@
 #include <string.h>
 #include "symtab.h"
 
-/* SIZE is the size of the hash table */
-#define SIZE 211
+ScopeTree globals;
+ScopeTree top;
 
 /* SHIFT is the power of two used as multiplier
    in hash function  */
@@ -59,7 +59,6 @@ static int hash( char* key )
 #if DEBUG
     printf( "hash(%s)\n", key );
 #endif
-
     while ( key[i] != '\0' )
     {
         temp = ( ( temp << SHIFT ) + key[i] ) % SIZE;
@@ -67,45 +66,6 @@ static int hash( char* key )
     }
     return temp;
 }
-
-/* the list of line numbers of the source
- * code in which a variable is referenced
- */
-typedef struct LineListRec
-{
-    int lineno;
-    struct LineListRec* next;
-} * LineList;
-
-/* The record in the bucket lists for
- * each variable, including name,
- * assigned memory location, and
- * the list of line numbers in which
- * it appears in the source code
- */
-// TODO scope를 관리할수 있게 끔 수정.
-typedef struct BucketListRec
-{
-    char* name;
-    LineList lines;
-    int memloc; /* memory location for variable */
-    struct BucketListRec* next;
-    // 타입 체크를 위한 노드 정보
-    TreeNode* node;
-} * BucketList;
-
-typedef struct ScopeTreeRec
-{
-    BucketList node[SIZE];
-    struct ScopeTreeRec * parent;
-    struct ScopeTreeRec * child;
-    struct ScopeTreeRec * sibling;
-} * ScopeTree;
-
-/* the hash table */
-// TODO 각각의 테이블들이 스코프별로 존재.
-static ScopeTree globals;
-static ScopeTree top;
 
 /* Procedure st_insert inserts line numbers and
  * memory locations into the symbol table
@@ -166,16 +126,6 @@ int st_lookup( char* name )
     int i;
     BucketList l = NULL;
     ScopeTree s = NULL;
-    if ( globals == NULL )
-    {
-        globals = (ScopeTree)malloc( sizeof( struct ScopeTreeRec ) );
-        top = globals;
-        for( i = 0; i < SIZE; i++ )
-            globals->node[i] = NULL;
-        globals->parent = NULL;
-        globals->child = NULL;
-        globals->sibling = NULL;
-    }
     s = top;
     l = top->node[h];
     while ( s != NULL )
@@ -184,6 +134,9 @@ int st_lookup( char* name )
             l = l->next;
         if ( l == NULL )
         {
+            if(s == globals){
+              printf("138 top\n");
+            }
             s = s->parent;
             if ( s != NULL ) l = s->node[h];
         }

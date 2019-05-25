@@ -10,6 +10,86 @@
 #include "symtab.h"
 #include "analyze.h"
 
+ScopeTree globals;
+ScopeTree top;
+
+/* Token To String */
+
+char* T2S[] = {[ENDFILE] = "ENDFILE", [ERROR] = "ERROR",
+               [COMMENT] = "COMMENT", [COMMENT_ERROR] = "COMMENT_ERROR",
+               [ELSE] = "ELSE",       [IF] = "IF",
+               [INT] = "INT",         [RETURN] = "RETURN",
+               [VOID] = "VOID",       [WHILE] = "WHILE",
+               [ID] = "ID",           [NUM] = "NUM",
+               [PLUS] = "PLUS",       [MINUS] = "MINUS",
+               [TIMES] = "TIMES",     [OVER] = "OVER",
+               [LT] = "LT",           [LTEQ] = "LTEQ",
+               [GT] = "GT",           [GTEQ] = "GTEQ",
+               [EQ] = "EQ",           [NEQ] = "NEQ",
+               [ASSIGN] = "ASSIGN",   [SEMI] = "SEMI",
+               [COMMA] = "COMMA",     [LPAREN] = "LPAREN",
+               [RPAREN] = "RPAREN",   [LBRACK] = "LBRACK",
+               [RBRACK] = "RBRACK",   [LBRACE] = "LBRACE",
+               [RBRACE] = "RBRACE"};
+
+/* TODO */
+void scope_down(){
+  int i;
+  ScopeTree s = NULL;
+ 
+  // child가 없다.
+  if(top->child == NULL){
+    top->child = top->child ;
+    top->child = (ScopeTree)malloc( sizeof( struct ScopeTreeRec ) );
+    for( i = 0; i < SIZE; i++ )
+      top->child->node[i] = NULL;
+    top->child->parent = top;
+    top->child->child = NULL;
+    top->child->sibling = NULL;
+    top->child->level = top->level+1;
+    top = top->child;
+  }
+  // 기존의 child 가 있으므로 siblin에서 찾는다.
+  else{
+    s = top->child;
+   while(s->sibling !=NULL) {
+     s = s->sibling;
+   }
+   s->sibling= (ScopeTree)malloc( sizeof( struct ScopeTreeRec ) );
+    for( i = 0; i < SIZE; i++ )
+      s->sibling->node[i] = NULL;
+    s->sibling->parent = top;
+    s->sibling->child = NULL;
+    s->sibling->sibling = NULL;
+    s->sibling->level = top->level+1;
+    s = s->sibling;
+    top = s;
+  }
+
+}
+
+void scope_up(){
+  if(top == globals)
+    printf("top\n");
+  top = top->parent;
+}
+
+// build
+void check_comp_out(TreeNode* t){
+	if(t->nodekind == StmtK && t->kind.stmt == CompK){
+		printf("Comp out\n");
+    scope_down();
+  }
+}
+
+// type check
+void check_comp_in(TreeNode* t){
+	if(t->nodekind == StmtK && t->kind.stmt == CompK){
+		printf("Comp in\n");
+    scope_up();
+  }
+}
+
 /* counter for variable memory locations */
 static int location = 0;
 
@@ -24,21 +104,33 @@ static void traverse( TreeNode* t,
 {
     if ( t != NULL )
     {
-#if DEBUG
-//	printf("preProc %s\n",t->attr.name);
-#endif
         preProc( t );
         {
             int i;
             for ( i = 0; i < MAXCHILDREN; i++ )
                 traverse( t->child[i], preProc, postProc );
         }
-#if DEBUG
-//	printf("postProc %s\n",t->attr.name);
-#endif
         postProc( t );
         traverse( t->sibling, preProc, postProc );
     }
+}
+
+/* Undeclaraed Variable,function */
+void error_undecl(TreeNode *t, int num_line){
+	switch(t->kind.exp){
+		case IdK:
+			printf("ERROR in line %d : variable '%s' not exists.\n",
+				num_line,t->attr.name);
+			break;
+		case ArrIdK:
+			printf("ERROR in line %d : array '%s' not exists.\n",
+				num_line,t->attr.arr.name);
+			break;
+		case CallK:
+			printf("ERROR in line %d : function '%s' not exists.\n",
+				num_line,t->attr.name);
+			break;
+	}
 }
 
 /* nullProc is a do-nothing procedure to
@@ -66,25 +158,30 @@ static void insertNode( TreeNode* t )
         case StmtK:
             switch ( t->kind.stmt )
             {
-                // TODO C-에는 없는 StmtK들
-                /*
-                case AssignK:
-                case ReadK:
-                  if (st_lookup(t->attr.name) == -1)
-                  // not yet in table, so treat as new definition
-                    st_insert(t->attr.name,t->lineno,location++);
-                  else
-                  // already in table, so ignore location,
-                     add line number of use only
-                    st_insert(t->attr.name,t->lineno,0);
-                  break;
-
-                default:
-                  break;
-                  */
 		case CompK:
 #if DEBUG
-                    printf( "%s : Stmt CompK \n", t->attr.name );
+                    printf( "Stmt CompK : scope down \n");
+#endif
+                   scope_down();
+			break;
+		case IfK:
+#if DEBUG
+                    printf( "Stmt IfK \n" );
+#endif
+			break;
+		case IterK:
+#if DEBUG
+                    printf( "Stmt IterK \n");
+#endif
+			break;
+		case RetK:
+#if DEBUG
+                    printf( "Stmt RetK \n" );
+#endif
+			break;
+		case ElseK:
+#if DEBUG
+                    printf( "Stmt ElseK \n" );
 #endif
 			break;
             }
@@ -98,13 +195,9 @@ static void insertNode( TreeNode* t )
                         printf( "%s : ExpK id \n", t->attr.name );
 #endif
                     if ( st_lookup( t->attr.name ) == -1 )
-                    {
-                        st_insert( t->attr.name, t->lineno, location++, t );
-                    }
+			error_undecl(t, t->lineno);
                     else
-                    {
                         st_insert( t->attr.name, t->lineno, 0, t );
-                    }
                     break;
                 // Array는 별도의 id kind를 지님.
                 case ArrIdK:
@@ -113,17 +206,19 @@ static void insertNode( TreeNode* t )
                     printf( "%s : ExpK ArrIdK \n", t->attr.arr.name );
 #endif
                     if ( st_lookup( t->attr.arr.name ) == -1 )
-                        /* not yet in table, so treat as new definition */
-                        st_insert( t->attr.arr.name, t->lineno, location++, t );
+			error_undecl(t, t->lineno);
                     else
-                        /* already in table, so ignore location,
-                           add line number of use only */
                         st_insert( t->attr.arr.name, t->lineno, 0, t );
                     break;
                 case CallK:
+
 #if DEBUG
                     printf( "%s : ExpK CallK \n", t->attr.name );
 #endif
+                    if ( st_lookup( t->attr.name ) == -1 )
+			error_undecl(t, t->lineno);
+                    else
+                        st_insert( t->attr.name, t->lineno, 0, t );
                     break;
                 case AssignK:
 #if DEBUG
@@ -206,14 +301,30 @@ static void insertNode( TreeNode* t )
         default:
             break;
     }
-}
+}	
+
 
 /* Function buildSymtab constructs the symbol
  * table by preorder traversal of the syntax tree
  */
 void buildSymtab( TreeNode* syntaxTree )
 {
-    traverse( syntaxTree, insertNode, nullProc );
+  int i;
+  // 첫 시행
+  if ( globals == NULL )
+  {
+    globals = (ScopeTree)malloc( sizeof( struct ScopeTreeRec ) );
+    top = globals;
+    for( i = 0; i < SIZE; i++ )
+      globals->node[i] = NULL;
+    globals->parent = NULL;
+    globals->child = NULL;
+    globals->sibling = NULL;
+    printf("Build globals..\n");
+  }
+  
+
+    traverse( syntaxTree, insertNode, check_comp_out);
     if ( TraceAnalyze )
     {
         fprintf( listing, "\nSymbol table:\n\n" );
@@ -286,6 +397,7 @@ static void checkNode( TreeNode* t )
         case StmtK:
             switch(t->kind.stmt){
                 case CompK:
+                  scope_up();
                     if ( t->child[0] == NULL && t->child[1] == NULL )
                         typeError(t,"Compound Statement must have an Element?");
 #if DEBUG
@@ -308,7 +420,7 @@ static void checkNode( TreeNode* t )
                     //if( t->child[0]->type != Intea ||
                         //t->child[1]->type != Int)
 #if DEBUG
-                    fprintf( listing, "Test %d, type : %d\n", t->lineno, t->child[0]->type );
+                    fprintf( listing, "Test %d, type : %s\n", t->lineno, T2S[t->child[0]->type ]);
 #endif
                 case OpK:
                 case ConstK:
@@ -323,8 +435,17 @@ static void checkNode( TreeNode* t )
             switch(t->kind.decl)
             {
                 case FuncK:
+		break;
                 case VarK:
+			if(t->type == VOID)
+				printf("ERROR in line %d : can't declare 'void' tpye variable\n",
+				t->lineno);
+		break;
                 case ArrVarK:
+			if(t->type == VOID)
+				printf("ERROR in line %d : can't declare 'void' tpye array\n",
+				t->lineno);
+		break;
                 default:
                     break; // for Fallback, Never entered in normal code
             }
@@ -356,5 +477,5 @@ static void checkNode( TreeNode* t )
  */
 void typeCheck( TreeNode* syntaxTree )
 {
-    traverse( syntaxTree, nullProc, checkNode );
+    traverse( syntaxTree, check_comp_in, checkNode );
 }
