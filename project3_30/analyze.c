@@ -141,12 +141,12 @@ static void insertNode( TreeNode* t )
 #if DEBUG
                     printf( "%s : DeclK NonArrVar \n", t->attr.name );
 #endif
-/*
+
                     if ( st_lookup( t->attr.arr.name ) == -1 )
                         st_insert( t->attr.arr.name, t->lineno, location++, t );
                     else
                         st_insert( t->attr.arr.name, t->lineno, 0, t );
-*/
+
                     break;
                 case ArrVarK:
 
@@ -165,8 +165,8 @@ static void insertNode( TreeNode* t )
 #endif
                     if ( st_lookup( t->attr.arr.name ) == -1 )
                         st_insert( t->attr.arr.name, t->lineno, location++, t );
-                    else ;
-                        //st_insert( t->attr.arr.name, t->lineno, 0, t );
+                    else 
+                        st_insert( t->attr.arr.name, t->lineno, 0, t );
 
 
                     break;
