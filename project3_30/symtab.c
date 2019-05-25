@@ -94,9 +94,18 @@ typedef struct BucketListRec
     TreeNode* node;
 } * BucketList;
 
+typedef struct ScopeTreeRec
+{
+    BucketList node[SIZE];
+    struct ScopeTreeRec * parent;
+    struct ScopeTreeRec * child;
+    struct ScopeTreeRec * sibling;
+} * ScopeTree;
+
 /* the hash table */
 // TODO 각각의 테이블들이 스코프별로 존재.
-static BucketList hashTable[SIZE];
+static ScopeTree globals;
+static ScopeTree top;
 
 /* Procedure st_insert inserts line numbers and
  * memory locations into the symbol table
@@ -108,11 +117,22 @@ static BucketList hashTable[SIZE];
 void st_insert( char* name, int lineno, int loc, TreeNode* t )
 {
     int h = hash( name );
-    BucketList l = hashTable[h];
+    ScopeTree s = top;
+    BucketList l = top->node[h];
 
-    while ( ( l != NULL ) && ( strcmp( name, l->name ) != 0 ) )
-        l = l->next;
-    if ( l == NULL ) /* variable not yet in table */
+    while ( s != NULL ) // search symbol name in scope tree
+    {
+        while ( ( l != NULL ) && ( strcmp( name, l->name ) != 0 ) )
+            l = l->next;
+        if ( l == NULL )
+        {
+            s = s->parent;
+            if ( s != NULL ) l = s->node[h];
+        }
+        else break;
+    }
+
+    if ( s == NULL ) // variable not yet in table, insert symbol in top
     {
         l = (BucketList)malloc( sizeof( struct BucketListRec ) );
         l->name = name;
@@ -120,13 +140,13 @@ void st_insert( char* name, int lineno, int loc, TreeNode* t )
         l->lines->lineno = lineno;
         l->memloc = loc;
         l->lines->next = NULL;
-        l->next = hashTable[h];
+        l->next = top->node[h];
 
         l->node = t;
 
-        hashTable[h] = l;
+        top->node[h] = l;
     }
-    else /* found in table, so just add line number */
+    else // found in table, so just add line number
     {
         LineList t = l->lines;
         while ( t->next != NULL )
@@ -135,20 +155,6 @@ void st_insert( char* name, int lineno, int loc, TreeNode* t )
         t->next->lineno = lineno;
         t->next->next = NULL;
     }
-    //
-    /*
-    switch(t->nodekind){
-      case DeclK:
-        printf("AA\n");
-      l->node->type = t->attr.type;
-        break;
-      case ParamK:
-        break;
-      default:
-        break;
-    }
-    */
-
 } /* st_insert */
 
 /* Function st_lookup returns the memory
@@ -157,10 +163,33 @@ void st_insert( char* name, int lineno, int loc, TreeNode* t )
 int st_lookup( char* name )
 {
     int h = hash( name );
-    BucketList l = hashTable[h];
-    while ( ( l != NULL ) && ( strcmp( name, l->name ) != 0 ) )
-        l = l->next;
-    if ( l == NULL )
+    int i;
+    BucketList l = NULL;
+    ScopeTree s = NULL;
+    if ( globals == NULL )
+    {
+        globals = (ScopeTree)malloc( sizeof( struct ScopeTreeRec ) );
+        top = globals;
+        for( i = 0; i < SIZE; i++ )
+            globals->node[i] = NULL;
+        globals->parent = NULL;
+        globals->child = NULL;
+        globals->sibling = NULL;
+    }
+    s = top;
+    l = top->node[h];
+    while ( s != NULL )
+    {
+        while ( ( l != NULL ) && ( strcmp( name, l->name ) != 0 ) )
+            l = l->next;
+        if ( l == NULL )
+        {
+            s = s->parent;
+            if ( s != NULL ) l = s->node[h];
+        }
+        else break;
+    }
+    if ( s == NULL )
         return -1;
     else
         return l->memloc;
@@ -170,7 +199,8 @@ int st_lookup( char* name )
  * listing of the symbol table contents
  * to the listing file
  */
-void printSymTab( FILE* listing )
+
+void printSymTabNode( FILE* listing, ScopeTree s )
 {
     int i;
     fprintf( listing,
@@ -181,9 +211,9 @@ void printSymTab( FILE* listing )
              "---\n" );
     for ( i = 0; i < SIZE; ++i )
     {
-        if ( hashTable[i] != NULL )
+        if ( s->node[i] != NULL )
         {
-            BucketList l = hashTable[i];
+            BucketList l = s->node[i];
             while ( l != NULL )
             {
                 LineList t = l->lines;
@@ -249,4 +279,13 @@ void printSymTab( FILE* listing )
             }
         }
     }
+    if( s->child != NULL ) printSymTabNode( listing, s->child );
+    else if ( s->sibling != NULL ) printSymTabNode( listing, s->sibling );
 } /* printSymTab */
+
+void printSymTab( FILE* listing )
+{
+    //for all scope: print symtab
+    printSymTabNode( listing, globals );
+}
+
