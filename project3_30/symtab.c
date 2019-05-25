@@ -57,7 +57,7 @@ static int hash( char* key )
     int temp = 0;
     int i = 0;
 #if DEBUG
-    printf( "hash(%s)\n", key );
+//    printf( "hash(%s)\n", key );
 #endif
     while ( key[i] != '\0' )
     {
@@ -101,6 +101,39 @@ void st_insert( char* name, int lineno, int loc, TreeNode* t )
         l->memloc = loc;
         l->lines->next = NULL;
         l->next = top->node[h];
+        l->node = t;
+        top->node[h] = l;
+
+    }
+    else // found in table, so just add line number
+    {
+        LineList t = l->lines;
+        while ( t->next != NULL )
+            t = t->next;
+        t->next = (LineList)malloc( sizeof( struct LineListRec ) );
+        t->next->lineno = lineno;
+        t->next->next = NULL;
+    }
+} /* st_insert */
+
+void st_insert_local( char* name, int lineno, int loc, TreeNode* t )
+{
+    int h = hash( name );
+    ScopeTree s = top;
+    BucketList l = top->node[h];
+
+        while ( ( l != NULL ) && ( strcmp( name, l->name ) != 0 ) )
+            l = l->next;
+
+    if ( l == NULL ) // variable not yet in table, insert symbol in top
+    {
+        l = (BucketList)malloc( sizeof( struct BucketListRec ) );
+        l->name = name;
+        l->lines = (LineList)malloc( sizeof( struct LineListRec ) );
+        l->lines->lineno = lineno;
+        l->memloc = loc;
+        l->lines->next = NULL;
+        l->next = top->node[h];
 
         l->node = t;
 
@@ -116,6 +149,8 @@ void st_insert( char* name, int lineno, int loc, TreeNode* t )
         t->next->next = NULL;
     }
 } /* st_insert */
+
+
 
 /* Function st_lookup returns the memory
  * location of a variable or -1 if not found
@@ -134,9 +169,6 @@ int st_lookup( char* name )
             l = l->next;
         if ( l == NULL )
         {
-            if(s == globals){
-              printf("138 top\n");
-            }
             s = s->parent;
             if ( s != NULL ) l = s->node[h];
         }
@@ -148,6 +180,17 @@ int st_lookup( char* name )
         return l->memloc;
 }
 
+int st_lookup_local( char* name ){
+    int h = hash( name );
+    BucketList l = NULL;
+    l = top->node[h];
+    if ( l == NULL )
+        return -1;
+    else
+        return l->memloc;
+
+
+}
 /* Procedure printSymTab prints a formatted
  * listing of the symbol table contents
  * to the listing file
@@ -156,12 +199,15 @@ int st_lookup( char* name )
 void printSymTabNode( FILE* listing, ScopeTree s )
 {
     int i;
-    fprintf( listing,
-             "Variable Name  Location  v/p/f  Array?  ArrSize  Type   Line "
-             "Numbers\n" );
-    fprintf( listing,
-             "-----------------------------------------------------------------"
-             "---\n" );
+
+  fprintf( listing,
+  "\nVariable Name  Loc level  v/p/f  Array?  ArrSize  Type   Line "
+  "Numbers\n" );
+  fprintf( listing,
+  "-------------------------------------------------------------------"
+  "---\n" );
+   
+
     for ( i = 0; i < SIZE; ++i )
     {
         if ( s->node[i] != NULL )
@@ -171,7 +217,8 @@ void printSymTabNode( FILE* listing, ScopeTree s )
             {
                 LineList t = l->lines;
                 fprintf( listing, "%-14s ", l->name );
-                fprintf( listing, "%-8d  ", l->memloc );
+                fprintf( listing, "%-4d  ", l->memloc );
+                fprintf( listing, "%-4d  ", s->level );
 
                 // V/P/F print
                 switch(l->node->nodekind) {
@@ -232,8 +279,13 @@ void printSymTabNode( FILE* listing, ScopeTree s )
             }
         }
     }
-    if( s->child != NULL ) printSymTabNode( listing, s->child );
-    else if ( s->sibling != NULL ) printSymTabNode( listing, s->sibling );
+    if( s->child != NULL ){
+      printSymTabNode( listing, s->child );
+}
+    if ( s->sibling != NULL ){ 
+      printSymTabNode( listing, s->sibling );
+
+    }
 } /* printSymTab */
 
 void printSymTab( FILE* listing )

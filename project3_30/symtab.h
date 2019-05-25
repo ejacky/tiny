@@ -60,11 +60,13 @@ extern ScopeTree top;
  * first time, otherwise ignored
  */
 void st_insert( char* name, int lineno, int loc, TreeNode* t );
+void st_insert_local( char* name, int lineno, int loc, TreeNode* t );
 
 /* Function st_lookup returns the memory
  * location of a variable or -1 if not found
  */
 int st_lookup( char* name );
+int st_lookup_local( char* name );
 
 /* Procedure printSymTab prints a formatted
  * listing of the symbol table contents

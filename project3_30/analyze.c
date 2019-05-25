@@ -13,6 +13,13 @@
 ScopeTree globals;
 ScopeTree top;
 
+/* counter for variable memory locations */
+static int location = 0;
+static int location_global = 0;
+static int location_param = 0;
+
+static int flag_param =0;
+
 /* Token To String */
 
 char* T2S[] = {[ENDFILE] = "ENDFILE", [ERROR] = "ERROR",
@@ -69,29 +76,26 @@ void scope_down(){
 }
 
 void scope_up(){
-  if(top == globals)
-    printf("top\n");
   top = top->parent;
 }
 
 // build
 void check_comp_out(TreeNode* t){
 	if(t->nodekind == StmtK && t->kind.stmt == CompK){
-		printf("Comp out\n");
-    scope_down();
+    scope_up();
+  }
+  else if(t->nodekind == DeclK && t->kind.decl == FuncK){
+    location=0;
   }
 }
 
 // type check
 void check_comp_in(TreeNode* t){
 	if(t->nodekind == StmtK && t->kind.stmt == CompK){
-		printf("Comp in\n");
-    scope_up();
+     scope_down();
   }
 }
 
-/* counter for variable memory locations */
-static int location = 0;
 
 /* Procedure traverse is a generic recursive
  * syntax tree traversal routine:
@@ -131,6 +135,8 @@ void error_undecl(TreeNode *t, int num_line){
 				num_line,t->attr.name);
 			break;
 	}
+  printf("exit.\n");
+  exit(-1);
 }
 
 /* nullProc is a do-nothing procedure to
@@ -162,7 +168,10 @@ static void insertNode( TreeNode* t )
 #if DEBUG
                     printf( "Stmt CompK : scope down \n");
 #endif
-                   scope_down();
+                   if(!flag_param){
+                    scope_down();
+                   }
+                    flag_param = 0;
 			break;
 		case IfK:
 #if DEBUG
@@ -190,7 +199,6 @@ static void insertNode( TreeNode* t )
             switch ( t->kind.exp )
             {
                 case IdK:
-
 #if DEBUG
                         printf( "%s : ExpK id \n", t->attr.name );
 #endif
@@ -201,7 +209,6 @@ static void insertNode( TreeNode* t )
                     break;
                 // Array는 별도의 id kind를 지님.
                 case ArrIdK:
-
 #if DEBUG
                     printf( "%s : ExpK ArrIdK \n", t->attr.arr.name );
 #endif
@@ -211,7 +218,6 @@ static void insertNode( TreeNode* t )
                         st_insert( t->attr.arr.name, t->lineno, 0, t );
                     break;
                 case CallK:
-
 #if DEBUG
                     printf( "%s : ExpK CallK \n", t->attr.name );
 #endif
@@ -237,10 +243,20 @@ static void insertNode( TreeNode* t )
                     printf( "%s : DeclK NonArrVar \n", t->attr.name );
 #endif
 
-                    if ( st_lookup( t->attr.arr.name ) == -1 )
-                        st_insert( t->attr.arr.name, t->lineno, location++, t );
+                    //if ( st_lookup( t->attr.arr.name ) == -1 )
+                    if ( st_lookup_local( t->attr.arr.name ) == -1 ){
+                      if(top == globals){
+                        st_insert_local( t->attr.arr.name, t->lineno, location_global, t );
+                        location_global-=4;
+                      }
+                      else{
+                        st_insert_local( t->attr.arr.name, t->lineno, location, t );
+                        location-=4;
+                      }
+                    }
                     else
-                        st_insert( t->attr.arr.name, t->lineno, 0, t );
+                       printf("ERROR duplicate\n");  
+                      //st_insert( t->attr.arr.name, t->lineno, 0, t );
 
                     break;
                 case ArrVarK:
@@ -248,18 +264,31 @@ static void insertNode( TreeNode* t )
 #if DEBUG
                     printf( "%s : DeclK ArrVar \n", t->attr.name );
 #endif
-                    if ( st_lookup( t->attr.arr.name ) == -1 )
-                        st_insert( t->attr.arr.name, t->lineno, location++, t );
+                    if ( st_lookup( t->attr.arr.name ) == -1 ){
+                      if(top == globals){
+                        st_insert_local( t->attr.arr.name, t->lineno, location_global, t );
+                        location_global-=4;
+                      }
+                      else{
+                        st_insert_local( t->attr.arr.name, t->lineno, location, t );
+                        location-=4;
+                      }
+
+
+                    }
                     else
-                        st_insert( t->attr.arr.name, t->lineno, 0, t );
+                       printf("ERROR duplicate\n");  
+                       // st_insert( t->attr.arr.name, t->lineno, 0, t );
 
                     break;
                 case FuncK:
 #if DEBUG
                     printf( "%s : DeclK Func \n", t->attr.name );
 #endif
-                    if ( st_lookup( t->attr.arr.name ) == -1 )
-                        st_insert( t->attr.arr.name, t->lineno, location++, t );
+                    if ( st_lookup( t->attr.arr.name ) == -1 ){
+                        st_insert( t->attr.arr.name, t->lineno, location_global, t );
+                        location_global-=4;
+                    }
                     else 
                         st_insert( t->attr.arr.name, t->lineno, 0, t );
 
@@ -273,6 +302,10 @@ static void insertNode( TreeNode* t )
             switch ( t->kind.param )
             {
                 case NonArrParamK:
+                  if(!flag_param){
+                    flag_param=1;
+                    scope_down();
+                  }
 #if DEBUG
                     printf( "%s : ParamK NonArr \n", t->attr.name );
 #endif
@@ -280,17 +313,25 @@ static void insertNode( TreeNode* t )
                     if ( t->type == VOID )
                         break;
 
-                    if ( st_lookup( t->attr.arr.name ) == -1 )
-                        st_insert( t->attr.arr.name, t->lineno, location++, t );
+                    if ( st_lookup( t->attr.arr.name ) == -1 ){
+                        location_param+=4;
+                        st_insert( t->attr.arr.name, t->lineno, location_param, t );
+                    }
                     else
                         st_insert( t->attr.arr.name, t->lineno, 0, t );
                     break;
                 case ArrParamK:
+                   if(!flag_param){
+                    flag_param=1;
+                    scope_down();
+                  }
 #if DEBUG
                     printf( "%s : ParamK NonArr \n", t->attr.arr.name );
 #endif
-                    if ( st_lookup( t->attr.arr.name ) == -1 )
-                        st_insert( t->attr.arr.name, t->lineno, location++, t );
+                    if ( st_lookup( t->attr.arr.name ) == -1 ){
+                        location_param+=4;
+                        st_insert( t->attr.arr.name, t->lineno, location_param, t );
+                    }
                     else
                         st_insert( t->attr.arr.name, t->lineno, 0, t );
                     break;
@@ -397,12 +438,12 @@ static void checkNode( TreeNode* t )
         case StmtK:
             switch(t->kind.stmt){
                 case CompK:
-                  scope_up();
+                    scope_up();
                     if ( t->child[0] == NULL && t->child[1] == NULL )
                         typeError(t,"Compound Statement must have an Element?");
 #if DEBUG
                     else
-                        // fprintf( listing, "Test Compound at %d\n", t->lineno );
+                         fprintf( listing, "Test Compound at %d\n", t->lineno );
 #endif
                     break;
                 case IfK:
@@ -424,9 +465,16 @@ static void checkNode( TreeNode* t )
 #endif
                 case OpK:
                 case ConstK:
+                    break;
                 case IdK:
+                    break;
                 case ArrIdK:
+                    break;
                 case CallK:
+#if DEBUG
+                    printf( "%s : ExpK CallK \n", t->attr.name );
+#endif
+ 
                 default:
                     break; // for Fallback, Never entered in normal code
             }
@@ -477,5 +525,6 @@ static void checkNode( TreeNode* t )
  */
 void typeCheck( TreeNode* syntaxTree )
 {
+  top = globals;
     traverse( syntaxTree, check_comp_in, checkNode );
 }
