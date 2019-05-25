@@ -24,12 +24,18 @@ static void traverse( TreeNode* t,
 {
     if ( t != NULL )
     {
+#if DEBUG
+//	printf("preProc %s\n",t->attr.name);
+#endif
         preProc( t );
         {
             int i;
             for ( i = 0; i < MAXCHILDREN; i++ )
                 traverse( t->child[i], preProc, postProc );
         }
+#if DEBUG
+//	printf("postProc %s\n",t->attr.name);
+#endif
         postProc( t );
         traverse( t->sibling, preProc, postProc );
     }
@@ -72,32 +78,40 @@ static void insertNode( TreeNode* t )
                      add line number of use only
                     st_insert(t->attr.name,t->lineno,0);
                   break;
+
                 default:
                   break;
                   */
+		case CompK:
+#if DEBUG
+                    printf( "%s : Stmt CompK \n", t->attr.name );
+#endif
+			break;
             }
             break;
         case ExpK:
             switch ( t->kind.exp )
             {
                 case IdK:
-                    if ( st_lookup( t->attr.name ) == -1 )
-                    {
+
 #if DEBUG
                         printf( "%s : ExpK id \n", t->attr.name );
 #endif
+                    if ( st_lookup( t->attr.name ) == -1 )
+                    {
                         st_insert( t->attr.name, t->lineno, location++, t );
                     }
                     else
                     {
-#if DEBUG
-                        printf( "%s : ExpK id \n", t->attr.name );
-#endif
                         st_insert( t->attr.name, t->lineno, 0, t );
                     }
                     break;
                 // Array는 별도의 id kind를 지님.
                 case ArrIdK:
+
+#if DEBUG
+                    printf( "%s : ExpK ArrIdK \n", t->attr.arr.name );
+#endif
                     if ( st_lookup( t->attr.arr.name ) == -1 )
                         /* not yet in table, so treat as new definition */
                         st_insert( t->attr.arr.name, t->lineno, location++, t );
@@ -107,8 +121,14 @@ static void insertNode( TreeNode* t )
                         st_insert( t->attr.arr.name, t->lineno, 0, t );
                     break;
                 case CallK:
+#if DEBUG
+                    printf( "%s : ExpK CallK \n", t->attr.name );
+#endif
                     break;
                 case AssignK:
+#if DEBUG
+                    printf( "%d : ExpK AssignK \n", t->attr.type );
+#endif
                     break;
                 default:
                     break;
@@ -119,14 +139,20 @@ static void insertNode( TreeNode* t )
             {
                 case VarK:
 #if DEBUG
-                    printf( "%s : DeclK Var \n", t->attr.name );
+                    printf( "%s : DeclK NonArrVar \n", t->attr.name );
 #endif
+/*
                     if ( st_lookup( t->attr.arr.name ) == -1 )
                         st_insert( t->attr.arr.name, t->lineno, location++, t );
                     else
                         st_insert( t->attr.arr.name, t->lineno, 0, t );
+*/
                     break;
                 case ArrVarK:
+
+#if DEBUG
+                    printf( "%s : DeclK ArrVar \n", t->attr.name );
+#endif
                     if ( st_lookup( t->attr.arr.name ) == -1 )
                         st_insert( t->attr.arr.name, t->lineno, location++, t );
                     else
@@ -134,14 +160,27 @@ static void insertNode( TreeNode* t )
 
                     break;
                 case FuncK:
+#if DEBUG
+                    printf( "%s : DeclK Func \n", t->attr.name );
+#endif
+                    if ( st_lookup( t->attr.arr.name ) == -1 )
+                        st_insert( t->attr.arr.name, t->lineno, location++, t );
+                    else ;
+                        //st_insert( t->attr.arr.name, t->lineno, 0, t );
+
+
                     break;
                 default:
                     break;
             }
+	break;
         case ParamK:
             switch ( t->kind.param )
             {
                 case NonArrParamK:
+#if DEBUG
+                    printf( "%s : ParamK NonArr \n", t->attr.name );
+#endif
                     // null 은 거름
                     if ( t->type == VOID )
                         break;
@@ -152,6 +191,9 @@ static void insertNode( TreeNode* t )
                         st_insert( t->attr.arr.name, t->lineno, 0, t );
                     break;
                 case ArrParamK:
+#if DEBUG
+                    printf( "%s : ParamK NonArr \n", t->attr.arr.name );
+#endif
                     if ( st_lookup( t->attr.arr.name ) == -1 )
                         st_insert( t->attr.arr.name, t->lineno, location++, t );
                     else
