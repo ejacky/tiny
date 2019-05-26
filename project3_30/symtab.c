@@ -80,19 +80,21 @@ void st_insert( char* name, int lineno, int loc, TreeNode* t )
     ScopeTree s = top;
     BucketList l = top->node[h];
 
-    while ( s != NULL ) // search symbol name in scope tree
+    while ( s != NULL )  // search symbol name in scope tree
     {
         while ( ( l != NULL ) && ( strcmp( name, l->name ) != 0 ) )
             l = l->next;
         if ( l == NULL )
         {
             s = s->parent;
-            if ( s != NULL ) l = s->node[h];
+            if ( s != NULL )
+                l = s->node[h];
         }
-        else break;
+        else
+            break;
     }
 
-    if ( s == NULL ) // variable not yet in table, insert symbol in top
+    if ( s == NULL )  // variable not yet in table, insert symbol in top
     {
         l = (BucketList)malloc( sizeof( struct BucketListRec ) );
         l->name = name;
@@ -103,9 +105,8 @@ void st_insert( char* name, int lineno, int loc, TreeNode* t )
         l->next = top->node[h];
         l->node = t;
         top->node[h] = l;
-
     }
-    else // found in table, so just add line number
+    else  // found in table, so just add line number
     {
         LineList t = l->lines;
         while ( t->next != NULL )
@@ -122,10 +123,10 @@ void st_insert_local( char* name, int lineno, int loc, TreeNode* t )
     ScopeTree s = top;
     BucketList l = top->node[h];
 
-        while ( ( l != NULL ) && ( strcmp( name, l->name ) != 0 ) )
-            l = l->next;
+    while ( ( l != NULL ) && ( strcmp( name, l->name ) != 0 ) )
+        l = l->next;
 
-    if ( l == NULL ) // variable not yet in table, insert symbol in top
+    if ( l == NULL )  // variable not yet in table, insert symbol in top
     {
         l = (BucketList)malloc( sizeof( struct BucketListRec ) );
         l->name = name;
@@ -139,7 +140,7 @@ void st_insert_local( char* name, int lineno, int loc, TreeNode* t )
 
         top->node[h] = l;
     }
-    else // found in table, so just add line number
+    else  // found in table, so just add line number
     {
         LineList t = l->lines;
         while ( t->next != NULL )
@@ -149,8 +150,6 @@ void st_insert_local( char* name, int lineno, int loc, TreeNode* t )
         t->next->next = NULL;
     }
 } /* st_insert */
-
-
 
 /* Function st_lookup returns the memory
  * location of a variable or -1 if not found
@@ -170,9 +169,11 @@ int st_lookup( char* name )
         if ( l == NULL )
         {
             s = s->parent;
-            if ( s != NULL ) l = s->node[h];
+            if ( s != NULL )
+                l = s->node[h];
         }
-        else break;
+        else
+            break;
     }
     if ( s == NULL )
         return -1;
@@ -180,7 +181,8 @@ int st_lookup( char* name )
         return l->memloc;
 }
 
-int st_lookup_local( char* name ){
+int st_lookup_local( char* name )
+{
     int h = hash( name );
     BucketList l = NULL;
     l = top->node[h];
@@ -188,8 +190,6 @@ int st_lookup_local( char* name ){
         return -1;
     else
         return l->memloc;
-
-
 }
 /* Procedure printSymTab prints a formatted
  * listing of the symbol table contents
@@ -200,13 +200,13 @@ void printSymTabNode( FILE* listing, ScopeTree s )
 {
     int i;
 
-  fprintf( listing,
-  "\nVariable Name  Loc level  v/p/f  Array?  ArrSize  Type   Line "
-  "Numbers\n" );
-  fprintf( listing,
-  "-------------------------------------------------------------------"
-  "---\n" );
-   
+    fprintf( listing,
+             "\nVariable Name  Loc level  v/p/f  Array?  ArrSize  Type   Line "
+             "Numbers\n" );
+    fprintf(
+        listing,
+        "-------------------------------------------------------------------"
+        "---\n" );
 
     for ( i = 0; i < SIZE; ++i )
     {
@@ -221,27 +221,29 @@ void printSymTabNode( FILE* listing, ScopeTree s )
                 fprintf( listing, "%-4d  ", s->level );
 
                 // V/P/F print
-                switch(l->node->nodekind) {
-                case DeclK:
-                    switch(l->node->kind.exp) {
-                    case ArrVarK:
-                    case VarK:
-                        fprintf( listing, "%-6s  ", "Var" );
+                switch ( l->node->nodekind )
+                {
+                    case DeclK:
+                        switch ( l->node->kind.exp )
+                        {
+                            case ArrVarK:
+                            case VarK:
+                                fprintf( listing, "%-6s  ", "Var" );
+                                break;
+                            case FuncK:
+                                fprintf( listing, "%-6s  ", "Func" );
+                                break;
+                            default:
+                                fprintf( listing, "%-6s  ", "error" );
+                                break;
+                        }
                         break;
-                    case FuncK:
-                        fprintf( listing, "%-6s  ", "Func" );
+                    case ParamK:
+                        fprintf( listing, "%-6s  ", "Param" );
                         break;
                     default:
                         fprintf( listing, "%-6s  ", "error" );
                         break;
-                    }
-                    break;
-                case ParamK:
-                    fprintf( listing, "%-6s  ", "Param" );
-                    break;
-                default:
-                    fprintf( listing, "%-6s  ", "error" );
-                    break;
                 }
 
                 // Array? print
@@ -279,18 +281,18 @@ void printSymTabNode( FILE* listing, ScopeTree s )
             }
         }
     }
-    if( s->child != NULL ){
-      printSymTabNode( listing, s->child );
-}
-    if ( s->sibling != NULL ){ 
-      printSymTabNode( listing, s->sibling );
-
+    if ( s->child != NULL )
+    {
+        printSymTabNode( listing, s->child );
+    }
+    if ( s->sibling != NULL )
+    {
+        printSymTabNode( listing, s->sibling );
     }
 } /* printSymTab */
 
 void printSymTab( FILE* listing )
 {
-    //for all scope: print symtab
+    // for all scope: print symtab
     printSymTabNode( listing, globals );
 }
-

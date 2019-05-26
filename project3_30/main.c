@@ -36,6 +36,8 @@ FILE* source;
 FILE* listing;
 FILE* code;
 
+int c = 0;
+
 /* allocate and set tracing flags */
 int EchoSource = TRUE;
 int TraceScan = FALSE;
@@ -65,6 +67,15 @@ int main( int argc, char* argv[] )
     }
     listing = stdout; /* send listing to screen */
 //  fprintf(listing,"\nTINY COMPILATION: %s\n",pgm);
+
+    if ( EchoSource )
+    {
+        fprintf( listing, "\nSource code of <%s> :\n", pgm );
+        fprintf( listing, "==============================\n" );
+        while ( ( c = getc(source) ) != EOF ) putchar( c );
+        fprintf( listing, "==============================\n" );
+        fseek( source, 0, SEEK_SET );
+    }
 #if NO_PARSE
     while ( getToken() != ENDFILE )
         ;

@@ -44,9 +44,9 @@ typedef struct BucketListRec
 typedef struct ScopeTreeRec
 {
     BucketList node[SIZE];
-    struct ScopeTreeRec * parent;
-    struct ScopeTreeRec * child;
-    struct ScopeTreeRec * sibling;
+    struct ScopeTreeRec* parent;
+    struct ScopeTreeRec* child;
+    struct ScopeTreeRec* sibling;
     int level;
 } * ScopeTree;
 

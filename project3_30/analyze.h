@@ -8,12 +8,11 @@
 #ifndef _ANALYZE_H_
 #define _ANALYZE_H_
 
-
 /*
  * Check Exit of compound.
  */
 
-void check_comp_out(TreeNode*);
+void check_comp_out( TreeNode* );
 
 /* Function buildSymtab constructs the symbol
  * table by preorder traversal of the syntax tree
