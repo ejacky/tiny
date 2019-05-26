@@ -247,7 +247,15 @@ static void insertNode( TreeNode* t )
                     printf( "%s : ExpK CallK \n", t->attr.name );
 #endif
                     if ( st_lookup( t->attr.name ) == -1 )
-                        error_undecl( t, t->lineno );
+                    {
+                        if ( strcmp(t->attr.name, "input" ) == 0 ||
+                             strcmp( t->attr.name, "output" ) == 0 )
+                        {
+                            printf("input or output called\n");
+                        }
+                        else
+                            error_undecl( t, t->lineno );
+                    }
                     else
                         st_insert( t->attr.name, t->lineno, 0, t );
                     break;
@@ -436,9 +444,21 @@ static void checkNode( TreeNode* t )
                     scope_up();
                     break;
                 case IfK:
+                    break;
                 case IterK:
+                    if ( t->child[1]->nodekind == ExpK &&
+                         t->child[1]->kind.exp == CallK &&
+                         t->child[1]->type == VOID ) // assign function return void
+                    {
+                        fprintf( listing,
+                         "ERROR in line %d : Iteration condition must be INT\n",
+                         t->lineno );
+                    }
+                    break;
                 case RetK:
+                    break;
                 case ElseK:
+                    break;
                 default:
                     break;  // for Fallback, Never entered in normal code
             }
@@ -447,6 +467,14 @@ static void checkNode( TreeNode* t )
             switch ( t->kind.exp )
             {
                 case AssignK:
+                    if ( t->child[1]->nodekind == ExpK &&
+                         t->child[1]->kind.exp == CallK &&
+                         t->child[1]->type == VOID ) // assign function return void
+                    {
+                        fprintf( listing,
+                         "ERROR in line %d : assigning void value to variable\n",
+                         t->lineno );
+                    }
                   /*
                    * 변수에 값을 assign 하는 경우 type에 대한 check
                    * 를 해야하는데 어차피 다른 타입 체크에서 걸러짐.
@@ -495,6 +523,7 @@ static void checkNode( TreeNode* t )
 #if DEBUG
                     fprintf(listing, "%s : ExpK CallK \n", t->attr.name );
 #endif
+                    break;
 
                 default:
                     break;  // for Fallback, Never entered in normal code
@@ -504,6 +533,27 @@ static void checkNode( TreeNode* t )
             switch ( t->kind.decl )
             {
                 case FuncK:
+                    if ( strcmp( t->attr.name, "main" ) == 0 )
+                    {
+                        if( t->sibling != NULL )
+                        {
+                            fprintf( listing,
+                             "ERROR in line %d : main function must at last place\n",
+                             t->lineno );
+                        }
+                        if ( t->type != VOID )
+                        {
+                            fprintf( listing,
+                             "ERROR in line %d : main function must return VOID\n",
+                             t->lineno );
+                        }
+                        if ( t->child[1]->type != VOID )
+                        {
+                            fprintf( listing,
+                             "ERROR in line %d : main function must have no parameter\n",
+                             t->lineno );
+                        }
+                    }
                     break;
                 case VarK:
 

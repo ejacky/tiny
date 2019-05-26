@@ -1,0 +1,12 @@
+int main(int a)
+{
+    int b;
+    b = 1;
+}
+
+int test(void)
+{
+    int c;
+    c = 1;
+    return c;
+}
