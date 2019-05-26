@@ -67,6 +67,10 @@ void st_insert_local( char* name, int lineno, int loc, TreeNode* t );
  */
 int st_lookup( char* name );
 int st_lookup_local( char* name );
+int st_lookup_lineno( char* name );
+int st_lookup_type( char* name );
+TreeNode* st_lookup_node( char* name );
+
 
 /* Procedure printSymTab prints a formatted
  * listing of the symbol table contents

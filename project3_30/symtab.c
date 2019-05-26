@@ -191,6 +191,99 @@ int st_lookup_local( char* name )
     else
         return l->memloc;
 }
+/* Function st_lookup returns 
+ * treeNode 
+ *  NULL if not found
+ */
+TreeNode* st_lookup_node( char* name )
+{
+    int h = hash( name );
+    int i;
+    BucketList l = NULL;
+    ScopeTree s = NULL;
+    s = top;
+    l = top->node[h];
+    while ( s != NULL )
+    {
+        while ( ( l != NULL ) && ( strcmp( name, l->name ) != 0 ) ){
+            l = l->next;
+        }
+        if ( l == NULL )
+        {
+            s = s->parent;
+            if ( s != NULL )
+                l = s->node[h];
+        }
+        else
+            break;
+    }
+    if ( s == NULL )
+        return NULL;
+    else
+        return l->node;
+}
+/* Function st_lookup returns 
+ * the line number for semantic 
+ *  -1 if not found
+ */
+int st_lookup_lineno( char* name )
+{
+    int h = hash( name );
+    int i;
+    BucketList l = NULL;
+    ScopeTree s = NULL;
+    s = top;
+    l = top->node[h];
+    while ( s != NULL )
+    {
+        while ( ( l != NULL ) && ( strcmp( name, l->name ) != 0 ) )
+            l = l->next;
+        if ( l == NULL )
+        {
+            s = s->parent;
+            if ( s != NULL )
+                l = s->node[h];
+        }
+        else
+            break;
+    }
+    if ( s == NULL )
+        return -1;
+    else
+        return l->node->lineno;
+}
+
+/* Function st_lookup returns 
+ * the type for sematic
+ *  -1 if not found
+ */
+int st_lookup_type( char* name )
+{
+    int h = hash( name );
+    int i;
+    BucketList l = NULL;
+    ScopeTree s = NULL;
+    s = top;
+    l = top->node[h];
+    while ( s != NULL )
+    {
+        while ( ( l != NULL ) && ( strcmp( name, l->name ) != 0 ) )
+            l = l->next;
+        if ( l == NULL )
+        {
+            s = s->parent;
+            if ( s != NULL )
+                l = s->node[h];
+        }
+        else
+            break;
+    }
+    if ( s == NULL )
+        return -1;
+    else
+        return l->node->type;
+}
+
 /* Procedure printSymTab prints a formatted
  * listing of the symbol table contents
  * to the listing file
