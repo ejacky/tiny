@@ -476,6 +476,7 @@ static void typeError( TreeNode* t, char* message )
 static void checkNode( TreeNode* t )
 {
   BucketList l_1,l_2;
+  TreeNode* t_1,*t_2;
     switch ( t->nodekind )
     {
         case StmtK:
@@ -517,6 +518,7 @@ static void checkNode( TreeNode* t )
                          t->lineno );
                     }
 
+                    /* () = Non Arr check */
                     if(t->child[1]->nodekind == ExpK &&
                        t->child[1]->kind.exp == ArrIdK
                         ){
@@ -531,6 +533,7 @@ static void checkNode( TreeNode* t )
                       printf("ERROR in line %d : Can't use non-array as array\n",t->lineno);
                       }
                     }
+                    /* Non arr = () */
                     else if(
                        t->child[0]->nodekind == ExpK &&
                        t->child[0]->kind.exp == ArrIdK
@@ -569,15 +572,6 @@ static void checkNode( TreeNode* t )
                 case IdK:
                     break;
                 case ArrIdK:
-/* array가 아닌 변수를 array처럼 사용하려 하는 경우 */
-                    /*
-                    printf("st_lookup_node %s\n",t->attr.arr.name);
-   if(st_lookup_type(t->attr.arr.name)==INT)
-     printf("EXP ARR NULL\n");
-     */
-
-
-
 /* 변수가 array인 경우 array index가 int가 아닌 경우 */
                     if(t->child[0]->kind.exp == ConstK){
                        //  OK.
@@ -591,9 +585,24 @@ static void checkNode( TreeNode* t )
 
                     break;
                 case CallK:
-#if DEBUG
-                    fprintf(listing, "%s : ExpK CallK \n", t->attr.name );
-#endif
+                    /* parameters - arguments check */
+                    l_1 = st_lookup_buck(t->attr.name);
+                    t_1   = t->child[0];
+                    t_2 = l_1->node->child[1];
+                    while(t_1!=NULL || t_2 !=NULL){
+                      if(t_1 == NULL || t_2 ==NULL){
+                        printf(
+     "ERROR in line %d : the number of arguments is incorrect.\n",t->lineno);
+                        break; 
+                      }
+                      if(t_1->type != t_2->type)
+                        printf(
+     "ERROR in line %d : the type of argument is incorrect.\n",t->lineno);
+                      t_1 = t_1->sibling;
+                      t_2 = t_2->sibling;
+                    }
+
+
                     break;
 
                 default:
