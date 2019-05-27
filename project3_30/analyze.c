@@ -163,6 +163,13 @@ void error_undecl( TreeNode* t, int num_line )
     exit( -1 );
 }
 
+// return type mismatch
+void error_return_mismatch( TreeNode* t )
+{
+    printf( "ERROR in line %d : function type mismatch.\n", t->lineno );
+    printf( "exit.\n" );
+    exit( -1 );
+}
 /* nullProc is a do-nothing procedure to
  * generate preorder-only or postorder-only
  * traversals from traverse
@@ -173,6 +180,24 @@ static void nullProc( TreeNode* t )
         return;
     else
         return;
+}
+
+static void checkVOIDreturn( TreeNode* t )
+{
+    if ( t->nodekind == StmtK &&
+         t->kind.stmt == RetK)
+        if ( t->child[0] != NULL )
+            error_return_mismatch( t );
+            // return int in void func()
+}
+
+static void checkINTreturn( TreeNode* t )
+{
+    if ( t->nodekind == StmtK &&
+         t->kind.stmt == RetK)
+        if ( t->child[0] == NULL )
+            error_return_mismatch( t );
+            // return void in int func()
 }
 
 /* Procedure insertNode inserts
@@ -552,6 +577,14 @@ static void checkNode( TreeNode* t )
                             fprintf( listing,
                              "ERROR in line %d : main function must have no parameter\n",
                              t->lineno );
+                        }
+                        if ( t->child[1]->type == VOID )
+                        {
+                            traverse( t, nullProc, checkVOIDreturn ); // check return type in void
+                        }
+                        if ( t->child[1]->type == VOID )
+                        {
+                            traverse( t, nullProc, checkINTreturn ); // check reutrn type in int
                         }
                     }
                     break;
