@@ -136,11 +136,10 @@ TreeNode* newExpNode( ExpKind kind )
         t->nodekind = ExpK;
         t->kind.exp = kind;
         t->lineno = lineno;
-        if(kind == ConstK)
-          t->type = INT;
+        if ( kind == ConstK )
+            t->type = INT;
         else
-          t->type = VOID;
-
+            t->type = VOID;
     }
     return t;
 }

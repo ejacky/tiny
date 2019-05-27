@@ -191,8 +191,9 @@ int st_lookup_local( char* name )
     else
         return l->memloc;
 }
-/* Function st_lookup returns 
- * treeNode 
+
+/* Function st_lookup returns
+ * treeNode
  *  NULL if not found
  */
 BucketList st_lookup_buck( char* name )
@@ -205,7 +206,8 @@ BucketList st_lookup_buck( char* name )
     l = top->node[h];
     while ( s != NULL )
     {
-        while ( ( l != NULL ) && ( strcmp( name, l->name ) != 0 ) ){
+        while ( ( l != NULL ) && ( strcmp( name, l->name ) != 0 ) )
+        {
             l = l->next;
         }
         if ( l == NULL )
@@ -222,8 +224,8 @@ BucketList st_lookup_buck( char* name )
     else
         return l;
 }
-/* Function st_lookup returns 
- * the line number for semantic 
+/* Function st_lookup returns
+ * the line number for semantic
  *  -1 if not found
  */
 int st_lookup_lineno( char* name )
@@ -253,7 +255,7 @@ int st_lookup_lineno( char* name )
         return l->node->lineno;
 }
 
-/* Function st_lookup returns 
+/* Function st_lookup returns
  * the type for sematic
  *  -1 if not found
  */

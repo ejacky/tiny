@@ -73,7 +73,6 @@ int st_lookup_lineno( char* name );
 int st_lookup_type( char* name );
 BucketList st_lookup_buck( char* name );
 
-
 /* Procedure printSymTab prints a formatted
  * listing of the symbol table contents
  * to the listing file

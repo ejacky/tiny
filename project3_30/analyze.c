@@ -52,7 +52,8 @@ void scope_down()
     ScopeTree s = NULL;
 
     // child가 없다.
-    if(!flag_check){
+    if ( !flag_check )
+    {
         if ( top->child == NULL )
         {
             top->child = top->child;
@@ -64,7 +65,7 @@ void scope_down()
             top->child->sibling = NULL;
             top->child->level = top->level + 1;
             top = top->child;
-            top ->visited=0;
+            top->visited = 0;
         }
         // 기존의 child 가 있으므로 siblin에서 찾는다.
         else
@@ -83,16 +84,18 @@ void scope_down()
             s->sibling->level = top->level + 1;
             s = s->sibling;
             top = s;
-            top ->visited=0;
+            top->visited = 0;
         }
     }
     /* TypeCheck 일경우. */
-    else{
-       top = top->child;
-       while(top->visited){
-         top = top->sibling;
-       }
-       top->visited=1;
+    else
+    {
+        top = top->child;
+        while ( top->visited )
+        {
+            top = top->sibling;
+        }
+        top->visited = 1;
     }
 }
 
@@ -123,15 +126,15 @@ void check_in( TreeNode* t )
         scope_down();
     }
     // find main func
-    if (t->nodekind == DeclK && t->kind.decl == FuncK){
-      if(t->attr.name[0] =='m'&&
-         t->attr.name[1] =='a'&&
-         t->attr.name[2] =='i'&&
-         t->attr.name[3] =='n'&&
-         t->attr.name[4] =='\0' )
-        flag_main=1;
-    }else
-      flag_main = 0;
+    if ( t->nodekind == DeclK && t->kind.decl == FuncK )
+    {
+        if ( t->attr.name[0] == 'm' && t->attr.name[1] == 'a' &&
+             t->attr.name[2] == 'i' && t->attr.name[3] == 'n' &&
+             t->attr.name[4] == '\0' )
+            flag_main = 1;
+    }
+    else
+        flag_main = 0;
 }
 
 /* Procedure traverse is a generic recursive
@@ -199,20 +202,18 @@ static void nullProc( TreeNode* t )
 
 static void checkVOIDreturn( TreeNode* t )
 {
-    if ( t->nodekind == StmtK &&
-         t->kind.stmt == RetK)
+    if ( t->nodekind == StmtK && t->kind.stmt == RetK )
         if ( t->child[0] != NULL )
             error_return_mismatch( t );
-            // return int in void func()
+    // return int in void func()
 }
 
 static void checkINTreturn( TreeNode* t )
 {
-    if ( t->nodekind == StmtK &&
-         t->kind.stmt == RetK)
+    if ( t->nodekind == StmtK && t->kind.stmt == RetK )
         if ( t->child[0] == NULL )
             error_return_mismatch( t );
-            // return void in int func()
+    // return void in int func()
 }
 
 /* Procedure insertNode inserts
@@ -288,10 +289,10 @@ static void insertNode( TreeNode* t )
 #endif
                     if ( st_lookup( t->attr.name ) == -1 )
                     {
-                        if ( strcmp(t->attr.name, "input" ) == 0 ||
+                        if ( strcmp( t->attr.name, "input" ) == 0 ||
                              strcmp( t->attr.name, "output" ) == 0 )
                         {
-                            printf("input or output called\n");
+                            printf( "input or output called\n" );
                         }
                         else
                             error_undecl( t, t->lineno );
@@ -327,15 +328,17 @@ static void insertNode( TreeNode* t )
                         }
                         else
                         {
-                            st_insert_local( t->attr.name, t->lineno,
-                                             location, t );
+                            st_insert_local( t->attr.name, t->lineno, location,
+                                             t );
                             location -= 4;
                         }
                     }
                     else
-                      printf(
- "ERROR in line %d : declaration of duplicated name '%s'. First declared in %d\n",
- t->lineno,t->attr.name,st_lookup_lineno(t->attr.name));
+                        printf(
+                            "ERROR in line %d : declaration of duplicated name "
+                            "'%s'. First declared in %d\n",
+                            t->lineno, t->attr.name,
+                            st_lookup_lineno( t->attr.name ) );
 
                     break;
                 case ArrVarK:
@@ -359,9 +362,11 @@ static void insertNode( TreeNode* t )
                         }
                     }
                     else
-                      printf(
- "ERROR in line %d : declaration of duplicated name '%s'. First declared in %d\n",
- t->lineno,t->attr.name,st_lookup_lineno(t->attr.arr.name));
+                        printf(
+                            "ERROR in line %d : declaration of duplicated name "
+                            "'%s'. First declared in %d\n",
+                            t->lineno, t->attr.name,
+                            st_lookup_lineno( t->attr.arr.name ) );
                     // st_insert( t->attr.arr.name, t->lineno, 0, t );
 
                     break;
@@ -376,9 +381,11 @@ static void insertNode( TreeNode* t )
                         location_global -= 4;
                     }
                     else
-                      printf(
- "ERROR in line %d : declaration of duplicated name '%s'. First declared in %d\n",
- t->lineno,t->attr.name,st_lookup_lineno(t->attr.name));
+                        printf(
+                            "ERROR in line %d : declaration of duplicated name "
+                            "'%s'. First declared in %d\n",
+                            t->lineno, t->attr.name,
+                            st_lookup_lineno( t->attr.name ) );
 
                     break;
                 default:
@@ -475,8 +482,8 @@ static void typeError( TreeNode* t, char* message )
  */
 static void checkNode( TreeNode* t )
 {
-  BucketList l_1,l_2;
-  TreeNode* t_1,*t_2;
+    BucketList l_1, l_2;
+    TreeNode *t_1, *t_2;
     switch ( t->nodekind )
     {
         case StmtK:
@@ -490,11 +497,13 @@ static void checkNode( TreeNode* t )
                 case IterK:
                     if ( t->child[1]->nodekind == ExpK &&
                          t->child[1]->kind.exp == CallK &&
-                         t->child[1]->type == VOID ) // assign function return void
+                         t->child[1]->type ==
+                             VOID )  // assign function return void
                     {
                         fprintf( listing,
-                         "ERROR in line %d : Iteration condition must be INT\n",
-                         t->lineno );
+                                 "ERROR in line %d : Iteration condition must "
+                                 "be INT\n",
+                                 t->lineno );
                     }
                     break;
                 case RetK:
@@ -511,97 +520,119 @@ static void checkNode( TreeNode* t )
                 case AssignK:
                     if ( t->child[1]->nodekind == ExpK &&
                          t->child[1]->kind.exp == CallK &&
-                         t->child[1]->type == VOID ) // assign function return void
+                         t->child[1]->type ==
+                             VOID )  // assign function return void
                     {
                         fprintf( listing,
-                         "ERROR in line %d : assigning void value to variable\n",
-                         t->lineno );
+                                 "ERROR in line %d : assigning void value to "
+                                 "variable\n",
+                                 t->lineno );
                     }
 
                     /* () = Non Arr check */
-                    if(t->child[1]->nodekind == ExpK &&
-                       t->child[1]->kind.exp == ArrIdK
-                        ){
-                   
-                    l_2 = st_lookup_buck(t->child[1]->attr.name);
+                    if ( t->child[1]->nodekind == ExpK &&
+                         t->child[1]->kind.exp == ArrIdK )
+                    {
+                        l_2 = st_lookup_buck( t->child[1]->attr.name );
 
-                    if((l_2->node->nodekind == ParamK &&
-                       l_2->node->kind.param != ArrParamK) ||
-                       (l_2->node->nodekind == DeclK &&
-                        l_2->node->kind.exp != ArrVarK)
-                        ){
-                      printf("ERROR in line %d : Can't use non-array as array\n",t->lineno);
-                      }
+                        if ( ( l_2->node->nodekind == ParamK &&
+                               l_2->node->kind.param != ArrParamK ) ||
+                             ( l_2->node->nodekind == DeclK &&
+                               l_2->node->kind.exp != ArrVarK ) )
+                        {
+                            printf(
+                                "ERROR in line %d : Can't use non-array as "
+                                "array\n",
+                                t->lineno );
+                        }
                     }
                     /* Non arr = () */
-                    else if(
-                       t->child[0]->nodekind == ExpK &&
-                       t->child[0]->kind.exp == ArrIdK
-                        ){
-                    l_2 = st_lookup_buck(t->child[1]->attr.name);
+                    else if ( t->child[0]->nodekind == ExpK &&
+                              t->child[0]->kind.exp == ArrIdK )
+                    {
+                        l_2 = st_lookup_buck( t->child[1]->attr.name );
 
-                    if((l_2->node->nodekind == ParamK &&
-                       l_2->node->kind.param != ArrParamK) ||
-                       (l_2->node->nodekind == DeclK &&
-                        l_2->node->kind.exp != ArrVarK)
-                        ){
-                      printf("ERROR in line %d : Can't use non-array as array\n",t->lineno);
-                      }
+                        if ( ( l_2->node->nodekind == ParamK &&
+                               l_2->node->kind.param != ArrParamK ) ||
+                             ( l_2->node->nodekind == DeclK &&
+                               l_2->node->kind.exp != ArrVarK ) )
+                        {
+                            printf(
+                                "ERROR in line %d : Can't use non-array as "
+                                "array\n",
+                                t->lineno );
+                        }
                     }
 
-                  /*
-                   * 변수에 값을 assign 하는 경우 type에 대한 check
-                   * 를 해야하는데 어차피 다른 타입 체크에서 걸러짐.
-                   * ? 뭘 하라는 걸까?
-                  if(t->child[1]->kind.exp == IdK)
-                  fprintf(listing,"%s = %s\n",
-                      t->child[0]->attr.name,t->child[1]->attr.name);
-                  if(t->child[1]->kind.exp == ConstK)
-                  fprintf(listing,"%s = %d\n",
-                      t->child[0]->attr.name,t->child[1]->attr.val);
-                      */
+/*
+ * 변수에 값을 assign 하는 경우 type에 대한 check
+ * 를 해야하는데 어차피 다른 타입 체크에서 걸러짐.
+ * ? 뭘 하라는 걸까?
+if(t->child[1]->kind.exp == IdK)
+fprintf(listing,"%s = %s\n",
+    t->child[0]->attr.name,t->child[1]->attr.name);
+if(t->child[1]->kind.exp == ConstK)
+fprintf(listing,"%s = %d\n",
+    t->child[0]->attr.name,t->child[1]->attr.val);
+    */
 
 #if DEBUG
                     fprintf( listing, "Test %d, type : %s\n", t->lineno,
                              T2S[t->child[0]->type] );
 #endif
-                  break;
+                    break;
                 case OpK:
+                    break;
                 case ConstK:
                     break;
                 case IdK:
+                    // fprintf(listing,
+                    //"ERROR in line %d : index is not integer.\n",t->lineno
+                    // );
                     break;
                 case ArrIdK:
-/* 변수가 array인 경우 array index가 int가 아닌 경우 */
-                    if(t->child[0]->kind.exp == ConstK){
-                       //  OK.
+                    /* 변수가 array인 경우 array index가 int가 아닌 경우 */
+                    if ( t->child[0]->kind.exp == ConstK )
+                    {
+                        //  OK.
                     }
-                    else{
-                      if(st_lookup_type(t->child[0]->attr.name) != INT)
-                        fprintf(listing,
-                         "ERROR in line %d : index is not integer.\n",t->lineno
-                            );
+                    else
+                    {
+                        if ( st_lookup_type( t->child[0]->attr.name ) != INT )
+                            fprintf(
+                                listing,
+                                "ERROR in line %d : index is not integer.\n",
+                                t->lineno );
                     }
 
                     break;
                 case CallK:
                     /* parameters - arguments check */
-                    l_1 = st_lookup_buck(t->attr.name);
-                    t_1   = t->child[0];
-                    t_2 = l_1->node->child[1];
-                    while(t_1!=NULL || t_2 !=NULL){
-                      if(t_1 == NULL || t_2 ==NULL){
-                        printf(
-     "ERROR in line %d : the number of arguments is incorrect.\n",t->lineno);
-                        break; 
-                      }
-                      if(t_1->type != t_2->type)
-                        printf(
-     "ERROR in line %d : the type of argument is incorrect.\n",t->lineno);
-                      t_1 = t_1->sibling;
-                      t_2 = t_2->sibling;
+                    l_1 = st_lookup_buck( t->attr.name );
+                    if ( l_1->node->nodekind != DeclK ||
+                         l_1->node->kind.decl != FuncK )  // call value
+                        printf( "ERROR in line %d : cannot call value\n",
+                                t->lineno );
+                    t_1 = t->child[0];          // call parameter
+                    t_2 = l_1->node->child[1];  // decl parameter
+                    while ( t_1 != NULL || t_2 != NULL )
+                    {
+                        if ( t_1 == NULL || t_2 == NULL )
+                        {
+                            printf(
+                                "ERROR in line %d : the number of arguments is "
+                                "incorrect.\n",
+                                t->lineno );
+                            break;
+                        }
+                        if ( t_1->type != t_2->type )
+                            printf(
+                                "ERROR in line %d : the type of argument is "
+                                "incorrect.\n",
+                                t->lineno );
+                        t_1 = t_1->sibling;
+                        t_2 = t_2->sibling;
                     }
-
 
                     break;
 
@@ -615,49 +646,56 @@ static void checkNode( TreeNode* t )
                 case FuncK:
                     if ( strcmp( t->attr.name, "main" ) == 0 )
                     {
-                        if( t->sibling != NULL )
+                        if ( t->sibling != NULL )
                         {
                             fprintf( listing,
-                             "ERROR in line %d : main function must at last place\n",
-                             t->lineno );
+                                     "ERROR in line %d : main function must at "
+                                     "last place\n",
+                                     t->lineno );
                         }
                         if ( t->type != VOID )
                         {
                             fprintf( listing,
-                             "ERROR in line %d : main function must return VOID\n",
-                             t->lineno );
+                                     "ERROR in line %d : main function must "
+                                     "return VOID\n",
+                                     t->lineno );
                         }
                         if ( t->child[1]->type != VOID )
                         {
                             fprintf( listing,
-                             "ERROR in line %d : main function must have no parameter\n",
-                             t->lineno );
+                                     "ERROR in line %d : main function must "
+                                     "have no parameter\n",
+                                     t->lineno );
                         }
                         if ( t->child[1]->type == VOID )
                         {
-                            traverse( t, nullProc, checkVOIDreturn ); // check return type in void
+                            traverse(
+                                t, nullProc,
+                                checkVOIDreturn );  // check return type in void
                         }
                         if ( t->child[1]->type == VOID )
                         {
-                            traverse( t, nullProc, checkINTreturn ); // check reutrn type in int
+                            traverse(
+                                t, nullProc,
+                                checkINTreturn );  // check reutrn type in int
                         }
                     }
                     break;
                 case VarK:
 
-                    if ( t->type == VOID)
-                        fprintf(listing,
-                            "ERROR in line %d : can't declare 'void' tpye "
-                            "variable\n",
-                            t->lineno );
+                    if ( t->type == VOID )
+                        fprintf( listing,
+                                 "ERROR in line %d : can't declare 'void' tpye "
+                                 "variable\n",
+                                 t->lineno );
 
                     break;
                 case ArrVarK:
                     if ( t->type == VOID )
-                        fprintf(listing,
-                            "ERROR in line %d : can't declare 'void' tpye "
-                            "array\n",
-                            t->lineno );
+                        fprintf( listing,
+                                 "ERROR in line %d : can't declare 'void' tpye "
+                                 "array\n",
+                                 t->lineno );
                     break;
                 default:
                     break;  // for Fallback, Never entered in normal code
@@ -666,21 +704,25 @@ static void checkNode( TreeNode* t )
         case ParamK:
             switch ( t->kind.param )
             {
-              /*
-               * main(void) 를 예외처리 해줘야함.
-               * 이 때 "(null)"로 들어올거임. 
-               * */
+                /*
+                 * main(void) 를 예외처리 해줘야함.
+                 * 이 때 "(null)"로 들어올거임.
+                 * */
                 case ArrParamK:
-                       if ( t->type == VOID && !flag_main )
-                        fprintf(listing,
-                            "ERROR in line %d : can't declare 'void' type parameter\n", t->lineno );
+                    if ( t->type == VOID && !flag_main )
+                        fprintf( listing,
+                                 "ERROR in line %d : can't declare 'void' type "
+                                 "parameter\n",
+                                 t->lineno );
 
-                  break;
+                    break;
                 case NonArrParamK:
-                       if ( t->type == VOID && flag_main )
-                        fprintf(listing,
-                            "ERROR in line %d : can't declare 'void' type parameter\n", t->lineno );
-                  break;
+                    if ( t->type == VOID && flag_main )
+                        fprintf( listing,
+                                 "ERROR in line %d : can't declare 'void' type "
+                                 "parameter\n",
+                                 t->lineno );
+                    break;
                 default:
                     break;  // for Fallback, Never entered in normal code
             }
@@ -703,7 +745,7 @@ static void checkNode( TreeNode* t )
  */
 void typeCheck( TreeNode* syntaxTree )
 {
-  flag_check = 1;
-//    top = globals;
+    flag_check = 1;
+    //    top = globals;
     traverse( syntaxTree, check_in, checkNode );
 }
