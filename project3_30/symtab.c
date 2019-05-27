@@ -57,7 +57,7 @@ static int hash( char* key )
     int temp = 0;
     int i = 0;
 #if DEBUG
-//    printf( "hash(%s)\n", key );
+    printf( "hash(%s)\n", key );
 #endif
     while ( key[i] != '\0' )
     {
@@ -195,7 +195,7 @@ int st_lookup_local( char* name )
  * treeNode 
  *  NULL if not found
  */
-TreeNode* st_lookup_node( char* name )
+BucketList st_lookup_buck( char* name )
 {
     int h = hash( name );
     int i;
@@ -220,7 +220,7 @@ TreeNode* st_lookup_node( char* name )
     if ( s == NULL )
         return NULL;
     else
-        return l->node;
+        return l;
 }
 /* Function st_lookup returns 
  * the line number for semantic 

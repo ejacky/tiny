@@ -48,6 +48,8 @@ typedef struct ScopeTreeRec
     struct ScopeTreeRec* child;
     struct ScopeTreeRec* sibling;
     int level;
+    /* 순회 도움 플래그*/
+    int visited;
 } * ScopeTree;
 
 /* the hash table */
@@ -69,7 +71,7 @@ int st_lookup( char* name );
 int st_lookup_local( char* name );
 int st_lookup_lineno( char* name );
 int st_lookup_type( char* name );
-TreeNode* st_lookup_node( char* name );
+BucketList st_lookup_buck( char* name );
 
 
 /* Procedure printSymTab prints a formatted

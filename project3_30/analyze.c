@@ -23,6 +23,9 @@ static int flag_param = 0;
 /* main 예외처리를 위한 플래그*/
 static int flag_main = 0;
 
+static int flag_check = 0;
+static int cnt_scope = 0;
+
 /* Token To String */
 
 char* T2S[] = {[ENDFILE] = "ENDFILE", [ERROR] = "ERROR",
@@ -49,35 +52,47 @@ void scope_down()
     ScopeTree s = NULL;
 
     // child가 없다.
-    if ( top->child == NULL )
-    {
-        top->child = top->child;
-        top->child = (ScopeTree)malloc( sizeof( struct ScopeTreeRec ) );
-        for ( i = 0; i < SIZE; i++ )
-            top->child->node[i] = NULL;
-        top->child->parent = top;
-        top->child->child = NULL;
-        top->child->sibling = NULL;
-        top->child->level = top->level + 1;
-        top = top->child;
-    }
-    // 기존의 child 가 있으므로 siblin에서 찾는다.
-    else
-    {
-        s = top->child;
-        while ( s->sibling != NULL )
+    if(!flag_check){
+        if ( top->child == NULL )
         {
-            s = s->sibling;
+            top->child = top->child;
+            top->child = (ScopeTree)malloc( sizeof( struct ScopeTreeRec ) );
+            for ( i = 0; i < SIZE; i++ )
+                top->child->node[i] = NULL;
+            top->child->parent = top;
+            top->child->child = NULL;
+            top->child->sibling = NULL;
+            top->child->level = top->level + 1;
+            top = top->child;
+            top ->visited=0;
         }
-        s->sibling = (ScopeTree)malloc( sizeof( struct ScopeTreeRec ) );
-        for ( i = 0; i < SIZE; i++ )
-            s->sibling->node[i] = NULL;
-        s->sibling->parent = top;
-        s->sibling->child = NULL;
-        s->sibling->sibling = NULL;
-        s->sibling->level = top->level + 1;
-        s = s->sibling;
-        top = s;
+        // 기존의 child 가 있으므로 siblin에서 찾는다.
+        else
+        {
+            s = top->child;
+            while ( s->sibling != NULL )
+            {
+                s = s->sibling;
+            }
+            s->sibling = (ScopeTree)malloc( sizeof( struct ScopeTreeRec ) );
+            for ( i = 0; i < SIZE; i++ )
+                s->sibling->node[i] = NULL;
+            s->sibling->parent = top;
+            s->sibling->child = NULL;
+            s->sibling->sibling = NULL;
+            s->sibling->level = top->level + 1;
+            s = s->sibling;
+            top = s;
+            top ->visited=0;
+        }
+    }
+    /* TypeCheck 일경우. */
+    else{
+       top = top->child;
+       while(top->visited){
+         top = top->sibling;
+       }
+       top->visited=1;
     }
 }
 
@@ -460,6 +475,7 @@ static void typeError( TreeNode* t, char* message )
  */
 static void checkNode( TreeNode* t )
 {
+  BucketList l_1,l_2;
     switch ( t->nodekind )
     {
         case StmtK:
@@ -500,6 +516,36 @@ static void checkNode( TreeNode* t )
                          "ERROR in line %d : assigning void value to variable\n",
                          t->lineno );
                     }
+
+                    if(t->child[1]->nodekind == ExpK &&
+                       t->child[1]->kind.exp == ArrIdK
+                        ){
+                   
+                    l_2 = st_lookup_buck(t->child[1]->attr.name);
+
+                    if((l_2->node->nodekind == ParamK &&
+                       l_2->node->kind.param != ArrParamK) ||
+                       (l_2->node->nodekind == DeclK &&
+                        l_2->node->kind.exp != ArrVarK)
+                        ){
+                      printf("ERROR in line %d : Can't use non-array as array\n",t->lineno);
+                      }
+                    }
+                    else if(
+                       t->child[0]->nodekind == ExpK &&
+                       t->child[0]->kind.exp == ArrIdK
+                        ){
+                    l_2 = st_lookup_buck(t->child[1]->attr.name);
+
+                    if((l_2->node->nodekind == ParamK &&
+                       l_2->node->kind.param != ArrParamK) ||
+                       (l_2->node->nodekind == DeclK &&
+                        l_2->node->kind.exp != ArrVarK)
+                        ){
+                      printf("ERROR in line %d : Can't use non-array as array\n",t->lineno);
+                      }
+                    }
+
                   /*
                    * 변수에 값을 assign 하는 경우 type에 대한 check
                    * 를 해야하는데 어차피 다른 타입 체크에서 걸러짐.
@@ -648,6 +694,7 @@ static void checkNode( TreeNode* t )
  */
 void typeCheck( TreeNode* syntaxTree )
 {
-    top = globals;
+  flag_check = 1;
+//    top = globals;
     traverse( syntaxTree, check_in, checkNode );
 }
