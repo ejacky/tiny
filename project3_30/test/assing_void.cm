@@ -1,8 +1,0 @@
-void voidFunc(void)
-{
-}
-void main(void)
-{
-    int a;
-    a = voidFunc();
-}
