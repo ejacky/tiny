@@ -557,7 +557,7 @@ static void checkNode( TreeNode* t )
                         }
                     }
                     /* Non arr = () */
-                    else if ( t->child[0]->nodekind == ExpK &&
+                    if ( t->child[0]->nodekind == ExpK &&
                               t->child[0]->kind.exp == ArrIdK )
                     {
                         l_2 = st_lookup_buck( t->child[1]->attr.name );
@@ -572,6 +572,40 @@ static void checkNode( TreeNode* t )
                                 "array\n",
                                 t->lineno );
                         }
+                    }
+/* Non Array[] = ()*/
+                    if ( t->child[0]->nodekind == ExpK &&
+                              t->child[0]->kind.exp == IdK ){
+                         l_2 = st_lookup_buck( t->child[0]->attr.name );
+
+                        if ( ( l_2->node->nodekind == ParamK &&
+                               l_2->node->kind.param == ArrParamK ) ||
+                             ( l_2->node->nodekind == DeclK &&
+                               l_2->node->kind.exp == ArrVarK ) )
+                        {
+                            printf(
+                                "ERROR in line %d : Can't use array as "
+                                "non-array\n",
+                                t->lineno );
+                        } 
+                    
+                    }
+                    /*() = Non Arr[]*/
+                  if ( t->child[1]->nodekind == ExpK &&
+                              t->child[1]->kind.exp == IdK ){
+                         l_2 = st_lookup_buck( t->child[1]->attr.name );
+
+                        if ( ( l_2->node->nodekind == ParamK &&
+                               l_2->node->kind.param == ArrParamK ) ||
+                             ( l_2->node->nodekind == DeclK &&
+                               l_2->node->kind.exp == ArrVarK ) )
+                        {
+                            printf(
+                                "ERROR in line %d : Can't use array as "
+                                "non-array\n",
+                                t->lineno );
+                        } 
+                    
                     }
 
 /*
