@@ -37,6 +37,7 @@ FILE* listing;
 FILE* code;
 
 int c = 0;
+int linecount = 0;
 
 /* allocate and set tracing flags */
 int EchoSource = TRUE;
@@ -46,6 +47,20 @@ int TraceAnalyze = TRUE;
 int TraceCode = FALSE;
 
 int Error = FALSE;
+
+void EchoSurce(char* pgm)
+{
+    linecount = 2;
+    fprintf( listing, "\nSource code of <%s> :\n", pgm );
+    fprintf( listing, "==============================\n0001 | " );
+    while ( ( c = getc( source ) ) != EOF )
+    {
+        if ( c == '\n' ) printf("\n%.4d | ",linecount++ );
+        else putchar( c );
+    }
+    fprintf( listing, "==============================\n" );
+    fseek( source, 0, SEEK_SET );
+}
 
 int main( int argc, char* argv[] )
 {
@@ -70,12 +85,7 @@ int main( int argc, char* argv[] )
 
     if ( EchoSource )
     {
-        fprintf( listing, "\nSource code of <%s> :\n", pgm );
-        fprintf( listing, "==============================\n" );
-        while ( ( c = getc( source ) ) != EOF )
-            putchar( c );
-        fprintf( listing, "==============================\n" );
-        fseek( source, 0, SEEK_SET );
+        EchoSurce(pgm);
     }
 #if NO_PARSE
     while ( getToken() != ENDFILE )

@@ -558,19 +558,22 @@ static void checkNode( TreeNode* t )
                     }
                     /* Non arr = () */
                     if ( t->child[0]->nodekind == ExpK &&
-                              t->child[0]->kind.exp == ArrIdK )
+                         t->child[0]->kind.exp == ArrIdK &&
+                         t->child[1]->nodekind == ExpK &&
+                         ( t->child[1]->kind.exp == IdK ||
+                           t->child[1]->kind.exp == ArrIdK ))
                     {
                         l_2 = st_lookup_buck( t->child[1]->attr.name );
 
                         if ( ( l_2->node->nodekind == ParamK &&
-                               l_2->node->kind.param != ArrParamK ) ||
-                             ( l_2->node->nodekind == DeclK &&
-                               l_2->node->kind.exp != ArrVarK ) )
+                                    l_2->node->kind.param != ArrParamK ) ||
+                                ( l_2->node->nodekind == DeclK &&
+                                  l_2->node->kind.exp != ArrVarK ) )
                         {
                             printf(
-                                "ERROR in line %d : Can't use non-array as "
-                                "array\n",
-                                t->lineno );
+                                    "ERROR in line %d : Can't use non-array as "
+                                    "array\n",
+                                    t->lineno );
                         }
                     }
 /* Non Array[] = ()*/
@@ -655,17 +658,19 @@ fprintf(listing,"%s = %d\n",
                     break;
                 case ArrIdK:
                     /* 변수가 array인 경우 array index가 int가 아닌 경우 */
-                    if ( t->child[0]->kind.exp == ConstK )
-                    {
-                        //  OK.
-                    }
-                    else
+                    if ( t->child[0]->nodekind == ExpK &&
+                         ( t->child[0]->kind.exp == IdK ||
+                           t->child[0]->kind.exp == ArrIdK ) )
                     {
                         if ( st_lookup_type( t->child[0]->attr.name ) != INT )
                             fprintf(
                                 listing,
                                 "ERROR in line %d : index is not integer.\n",
                                 t->lineno );
+                    }
+                    else
+                    {
+                        //OK
                     }
 
                     break;
