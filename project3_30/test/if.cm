@@ -1,0 +1,12 @@
+void a(int d)
+{
+    int c;
+}
+void main(void)
+{
+    int b;
+    if(a())
+    {
+        b = 1;
+    }
+}

@@ -493,12 +493,22 @@ static void checkNode( TreeNode* t )
                     scope_up();
                     break;
                 case IfK:
+                    if ( t->child[0]->nodekind == ExpK &&
+                         t->child[0]->kind.exp == CallK &&
+                         t->child[0]->type == VOID )
+                        // assign function return void
+                    {
+                        fprintf( listing,
+                                 "ERROR in line %d : If condition must "
+                                 "be INT\n",
+                                 t->lineno );
+                    }
                     break;
                 case IterK:
                     if ( t->child[1]->nodekind == ExpK &&
                          t->child[1]->kind.exp == CallK &&
-                         t->child[1]->type ==
-                             VOID )  // assign function return void
+                         t->child[1]->type == VOID )
+                        // assign function return void
                     {
                         fprintf( listing,
                                  "ERROR in line %d : Iteration condition must "
@@ -615,23 +625,35 @@ fprintf(listing,"%s = %d\n",
                                 t->lineno );
                     t_1 = t->child[0];          // call parameter
                     t_2 = l_1->node->child[1];  // decl parameter
-                    while ( t_1 != NULL || t_2 != NULL )
+                    if ( t_1 == NULL && t_2 != NULL && t_2->type != VOID )
                     {
-                        if ( t_1 == NULL || t_2 == NULL )
-                        {
-                            printf(
+                        // func(void) > func(a,...)
+                        printf(
                                 "ERROR in line %d : the number of arguments is "
                                 "incorrect.\n",
                                 t->lineno );
-                            break;
+                    }
+                    else if ( t_1 != NULL && t_2 != NULL )
+                    // func(a,...) > func(b,...)
+                    {
+                        while ( t_1 != NULL || t_2 != NULL )
+                        {
+                            if ( t_1 == NULL || t_2 == NULL )
+                            {
+                                printf(
+                                        "ERROR in line %d : the number of arguments is "
+                                        "incorrect.\n",
+                                        t->lineno );
+                                break;
+                            }
+                            if ( t_1->type != t_2->type )
+                                printf(
+                                        "ERROR in line %d : the type of argument is "
+                                        "incorrect.\n",
+                                        t->lineno );
+                            t_1 = t_1->sibling;
+                            t_2 = t_2->sibling;
                         }
-                        if ( t_1->type != t_2->type )
-                            printf(
-                                "ERROR in line %d : the type of argument is "
-                                "incorrect.\n",
-                                t->lineno );
-                        t_1 = t_1->sibling;
-                        t_2 = t_2->sibling;
                     }
 
                     break;
