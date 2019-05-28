@@ -1,0 +1,21 @@
+int d;
+
+int func(int a)
+{
+    int b;
+    b = 1;
+    return a + b;
+}
+
+void main(void)
+{
+    int a;
+    d = 1;
+    {
+        int b;
+        int a[10];
+        {
+            int c;
+        }
+    }
+}
