@@ -630,29 +630,29 @@ fprintf(listing,"%s = %d\n",
                     break;
                 case OpK:
                     // Get Declared type of function
-                    /*
-                    t_1 = st_lookup_buck(t->child[0]->attr.name)->node;
+                    
                     if ( 
                          t->child[0]->nodekind == ExpK &&
-                         t->child[0]->kind.exp == CallK &&
-                         t_1->type == VOID )
+                         t->child[0]->kind.exp == CallK )
                         // assign function return void
                     {
-                        fprintf( listing,
-                                 "ERROR in line %d : void cannot operated\n",
-                                 t->lineno );
+                        t_1 = st_lookup_buck(t->child[0]->attr.name)->node;
+                        if( t_1->type == VOID )
+                            fprintf( listing,
+                                    "ERROR in line %d : void cannot operated\n",
+                                    t->lineno );
                     }
-                    t_1 = st_lookup_buck(t->child[1]->attr.name)->node;
                     if ( t->child[1]->nodekind == ExpK &&
-                         t->child[1]->kind.exp == CallK &&
-                         t_1->type == VOID )
+                         t->child[1]->kind.exp == CallK)
                         // assign function return void
                     {
-                        fprintf( listing,
-                                 "ERROR in line %d : void cannot operated\n",
-                                 t->lineno );
+                        t_1 = st_lookup_buck(t->child[1]->attr.name)->node;
+                        if ( t_1->type == VOID )
+                            fprintf( listing,
+                                    "ERROR in line %d : void cannot operated\n",
+                                    t->lineno );
                     }
-                    */
+                    
                     break;
                 case ConstK:
                     t->type = INT;
@@ -691,6 +691,7 @@ fprintf(listing,"%s = %d\n",
                                 t->lineno );
                     t_1 = t->child[0];          // call parameter
                     t_2 = l_1->node->child[1];  // decl parameter
+                    t->type = l_1->node->type;
                     if ( t_1 == NULL && t_2 != NULL && t_2->type != VOID )
                     {
                         // func(void) > func(a,...)
