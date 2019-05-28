@@ -530,8 +530,8 @@ static void checkNode( TreeNode* t )
                 case AssignK:
                     if ( t->child[1]->nodekind == ExpK &&
                          t->child[1]->kind.exp == CallK &&
-                         t->child[1]->type ==
-                             VOID )  // assign function return void
+                         t->child[1]->type == VOID )
+                        // assign function return void
                     {
                         fprintf( listing,
                                  "ERROR in line %d : assigning void value to "
@@ -592,8 +592,27 @@ fprintf(listing,"%s = %d\n",
 #endif
                     break;
                 case OpK:
+                    if ( t->child[0]->nodekind == ExpK &&
+                         t->child[0]->kind.exp == CallK &&
+                         t->child[0]->type == VOID )
+                        // assign function return void
+                    {
+                        fprintf( listing,
+                                 "ERROR in line %d : void cannot operated\n",
+                                 t->lineno );
+                    }
+                    if ( t->child[1]->nodekind == ExpK &&
+                         t->child[1]->kind.exp == CallK &&
+                         t->child[1]->type == VOID )
+                        // assign function return void
+                    {
+                        fprintf( listing,
+                                 "ERROR in line %d : void cannot operated\n",
+                                 t->lineno );
+                    }
                     break;
                 case ConstK:
+                    t->type = INT;
                     break;
                 case IdK:
                     // fprintf(listing,
