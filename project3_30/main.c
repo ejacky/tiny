@@ -40,7 +40,7 @@ int c = 0;
 int linecount = 0;
 
 /* allocate and set tracing flags */
-int EchoSource = TRUE;
+int EchoSource = FALSE;
 int TraceScan = FALSE;
 int TraceParse = FALSE;
 int TraceAnalyze = TRUE;
