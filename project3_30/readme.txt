@@ -1,1 +1,1 @@
-Make all./ 20130523 < 파일 >
+make ./project3_30 < 파일 >
