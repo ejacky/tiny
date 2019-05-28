@@ -1,0 +1,10 @@
+int a[10];
+int b;
+
+void main(void)
+{
+    b = 1;
+    a = 1; /* error */
+    a[0] = 1;
+    b[0] = 1; /* error */
+}
