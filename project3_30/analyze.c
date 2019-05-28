@@ -483,7 +483,7 @@ static void typeError( TreeNode* t, char* message )
 static void checkNode( TreeNode* t )
 {
     BucketList l_1, l_2;
-    TreeNode *t_1, *t_2;
+    TreeNode *t_1, *t_2,*t_3;
     switch ( t->nodekind )
     {
         case StmtK:
@@ -560,7 +560,7 @@ static void checkNode( TreeNode* t )
                     if ( t->child[0]->nodekind == ExpK &&
                               t->child[0]->kind.exp == ArrIdK )
                     {
-                        l_2 = st_lookup_buck( t->child[1]->attr.name );
+                        l_2 = st_lookup_buck( t->child[0]->attr.name );
 
                         if ( ( l_2->node->nodekind == ParamK &&
                                l_2->node->kind.param != ArrParamK ) ||
@@ -626,24 +626,30 @@ fprintf(listing,"%s = %d\n",
 #endif
                     break;
                 case OpK:
-                    if ( t->child[0]->nodekind == ExpK &&
+                    // Get Declared type of function
+                    /*
+                    t_1 = st_lookup_buck(t->child[0]->attr.name)->node;
+                    if ( 
+                         t->child[0]->nodekind == ExpK &&
                          t->child[0]->kind.exp == CallK &&
-                         t->child[0]->type == VOID )
+                         t_1->type == VOID )
                         // assign function return void
                     {
                         fprintf( listing,
                                  "ERROR in line %d : void cannot operated\n",
                                  t->lineno );
                     }
+                    t_1 = st_lookup_buck(t->child[1]->attr.name)->node;
                     if ( t->child[1]->nodekind == ExpK &&
                          t->child[1]->kind.exp == CallK &&
-                         t->child[1]->type == VOID )
+                         t_1->type == VOID )
                         // assign function return void
                     {
                         fprintf( listing,
                                  "ERROR in line %d : void cannot operated\n",
                                  t->lineno );
                     }
+                    */
                     break;
                 case ConstK:
                     t->type = INT;
@@ -661,7 +667,9 @@ fprintf(listing,"%s = %d\n",
                     }
                     else
                     {
-                        if ( st_lookup_type( t->child[0]->attr.name ) != INT )
+                     // printf("%s\n",t->child[0]->attr.name);
+                        if ( st_lookup_buck( t->child[0]->attr.name )->node->type
+                            != INT )
                             fprintf(
                                 listing,
                                 "ERROR in line %d : index is not integer.\n",
@@ -699,7 +707,15 @@ fprintf(listing,"%s = %d\n",
                                         t->lineno );
                                 break;
                             }
-                            if ( t_1->type != t_2->type )
+                            l_1 = st_lookup_buck(t_1->attr.name);
+                            t_3 = l_1->node;
+                            /*t_3 arg decl, t_2 paarm decl */
+                            if (  (t_2->kind.param == ArrParamK 
+                                && t_3->kind.decl ==IdK)||
+                                ( t_2->kind.param == NonArrParamK &&
+                                  t_3->kind.decl == ArrVarK
+                                 )
+                                )
                                 printf(
                                         "ERROR in line %d : the type of argument is "
                                         "incorrect.\n",
