@@ -712,7 +712,8 @@ fprintf(listing,"%s = %d\n",
                                         t->lineno );
                                 break;
                             }
-                            l_1 = st_lookup_buck(t_1->attr.name);
+                            if(!(t_1->nodekind==ExpK && t_1->kind.exp==ConstK) )
+                            {l_1 = st_lookup_buck(t_1->attr.name);
                             t_3 = l_1->node;
                             /*t_3 arg decl, t_2 paarm decl */
                             if (  (t_2->kind.param == ArrParamK 
@@ -725,6 +726,14 @@ fprintf(listing,"%s = %d\n",
                                         "ERROR in line %d : the type of argument is "
                                         "incorrect.\n",
                                         t->lineno );
+                            // const arg
+                            }else{
+                               if(t_2->kind.param == ArrParamK) 
+                                printf(
+                                        "ERROR in line %d : the type of argument is "
+                                        "incorrect.\n",
+                                        t->lineno );
+                            }
                             t_1 = t_1->sibling;
                             t_2 = t_2->sibling;
                         }
