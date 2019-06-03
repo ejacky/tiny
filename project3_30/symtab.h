@@ -69,7 +69,7 @@ void st_insert_local( char* name, int lineno, int loc, TreeNode* t );
  */
 int st_lookup( char* name );
 /* Function st_lookup_local returns the memory
- * location of a variable or -1 if not found
+ * location of a local variable or -1 if not found
  */
 int st_lookup_local( char* name );
 /* Function st_lookup_lineno returns thelineno
