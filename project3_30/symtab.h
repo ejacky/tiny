@@ -68,9 +68,21 @@ void st_insert_local( char* name, int lineno, int loc, TreeNode* t );
  * location of a variable or -1 if not found
  */
 int st_lookup( char* name );
+/* Function st_lookup_local returns the memory
+ * location of a local variable or -1 if not found
+ */
 int st_lookup_local( char* name );
+/* Function st_lookup_lineno returns thelineno
+ * of a variable or -1 if not found
+ */
 int st_lookup_lineno( char* name );
+/* Function st_lookup_type returns
+ * type of a variable or -1 if not found
+ */
 int st_lookup_type( char* name );
+/* Function st_lookup_buck returns
+ * BucketList of a variable or nullptr if not found
+ */
 BucketList st_lookup_buck( char* name );
 
 /* Procedure printSymTab prints a formatted
