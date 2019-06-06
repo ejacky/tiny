@@ -230,9 +230,6 @@ static void insertNode( TreeNode* t )
             switch ( t->kind.stmt )
             {
                 case CompK:
-#if DEBUG
-                    printf( "Stmt CompK : scope down \n" );
-#endif
                     if ( !flag_param )
                     {
                         scope_down();
@@ -240,24 +237,12 @@ static void insertNode( TreeNode* t )
                     flag_param = 0;
                     break;
                 case IfK:
-#if DEBUG
-                    printf( "Stmt IfK \n" );
-#endif
                     break;
                 case IterK:
-#if DEBUG
-                    printf( "Stmt IterK \n" );
-#endif
                     break;
                 case RetK:
-#if DEBUG
-                    printf( "Stmt RetK \n" );
-#endif
                     break;
                 case ElseK:
-#if DEBUG
-                    printf( "Stmt ElseK \n" );
-#endif
                     break;
             }
             break;
@@ -265,9 +250,6 @@ static void insertNode( TreeNode* t )
             switch ( t->kind.exp )
             {
                 case IdK:
-#if DEBUG
-                    printf( "%s : ExpK id \n", t->attr.name );
-#endif
                     if ( st_lookup( t->attr.name ) == -1 )
                         error_undecl( t, t->lineno );
                     else
@@ -275,18 +257,12 @@ static void insertNode( TreeNode* t )
                     break;
                 // Array는 별도의 id kind를 지님.
                 case ArrIdK:
-#if DEBUG
-                    printf( "%s : ExpK ArrIdK \n", t->attr.arr.name );
-#endif
                     if ( st_lookup( t->attr.arr.name ) == -1 )
                         error_undecl( t, t->lineno );
                     else
                         st_insert( t->attr.arr.name, t->lineno, 0, t );
                     break;
                 case CallK:
-#if DEBUG
-                    printf( "%s : ExpK CallK \n", t->attr.name );
-#endif
                     if ( st_lookup( t->attr.name ) == -1 )
                     {
                         if ( strcmp( t->attr.name, "input" ) == 0 ||
@@ -301,9 +277,6 @@ static void insertNode( TreeNode* t )
                         st_insert( t->attr.name, t->lineno, 0, t );
                     break;
                 case AssignK:
-#if DEBUG
-                    printf( "%d : ExpK AssignK \n", t->attr.type );
-#endif
                     break;
                 default:
                     break;
@@ -313,9 +286,6 @@ static void insertNode( TreeNode* t )
             switch ( t->kind.decl )
             {
                 case VarK:
-#if DEBUG
-                    printf( "%s : DeclK NonArrVar \n", t->attr.name );
-#endif
 
                     // if ( st_lookup( t->attr.arr.name ) == -1 )
                     if ( st_lookup_local( t->attr.name ) == -1 )
@@ -343,9 +313,6 @@ static void insertNode( TreeNode* t )
                     break;
                 case ArrVarK:
 
-#if DEBUG
-                    printf( "%s : DeclK ArrVar \n", t->attr.name );
-#endif
                     if ( st_lookup( t->attr.arr.name ) == -1 )
                     {
                         if ( top == globals )
@@ -371,9 +338,6 @@ static void insertNode( TreeNode* t )
 
                     break;
                 case FuncK:
-#if DEBUG
-                    printf( "%s : DeclK Func \n", t->attr.name );
-#endif
                     if ( st_lookup( t->attr.arr.name ) == -1 )
                     {
                         location_global += 4;
@@ -401,9 +365,6 @@ static void insertNode( TreeNode* t )
                         flag_param = 1;
                         scope_down();
                     }
-#if DEBUG
-                    printf( "%s : ParamK NonArr \n", t->attr.name );
-#endif
                     // null 은 거름
                     if ( t->type == VOID )
                         break;
@@ -423,9 +384,6 @@ static void insertNode( TreeNode* t )
                         flag_param = 1;
                         scope_down();
                     }
-#if DEBUG
-                    printf( "%s : ParamK NonArr \n", t->attr.arr.name );
-#endif
                     if ( st_lookup( t->attr.arr.name ) == -1 )
                     {
                         location_param += 4;
@@ -623,10 +581,6 @@ fprintf(listing,"%s = %d\n",
     t->child[0]->attr.name,t->child[1]->attr.val);
     */
 
-#if DEBUG
-                    fprintf( listing, "Test %d, type : %s\n", t->lineno,
-                             T2S[t->child[0]->type] );
-#endif
                     break;
                 case OpK:
                     // Get Declared type of function
