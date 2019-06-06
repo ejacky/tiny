@@ -56,9 +56,6 @@ static int hash( char* key )
 {
     int temp = 0;
     int i = 0;
-#if DEBUG
-    printf( "hash(%s)\n", key );
-#endif
     while ( key[i] != '\0' )
     {
         temp = ( ( temp << SHIFT ) + key[i] ) % SIZE;

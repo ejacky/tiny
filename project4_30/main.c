@@ -15,7 +15,7 @@
 /* set NO_CODE to TRUE to get a compiler that does not
  * generate code
  */
-#define NO_CODE TRUE
+#define NO_CODE FALSE
 
 #include "util.h"
 #if NO_PARSE
@@ -43,8 +43,8 @@ int linecount = 0;
 int EchoSource = FALSE;
 int TraceScan = FALSE;
 int TraceParse = FALSE;
-int TraceAnalyze = TRUE;
-int TraceCode = FALSE;
+int TraceAnalyze = FALSE;
+int TraceCode = TRUE;
 
 int Error = FALSE;
 
@@ -118,7 +118,7 @@ int main( int argc, char* argv[] )
         int fnlen = strcspn( pgm, "." );
         codefile = (char*)calloc( fnlen + 4, sizeof( char ) );
         strncpy( codefile, pgm, fnlen );
-        strcat( codefile, ".tm" );
+        strcat( codefile, ".spim" );
         code = fopen( codefile, "w" );
         if ( code == NULL )
         {

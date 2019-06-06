@@ -13,7 +13,6 @@ void main(void)
     d = 1;
     {
         int b;
-        int a[10];
         {
             int c;
         }
