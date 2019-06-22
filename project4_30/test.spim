@@ -1,8 +1,35 @@
-* TINY Compilation to TM Code
-* File: test.spim
-* Standard prelude:
-  0:     LD  6,0(0) 	load maxaddress from location 0
-  1:     ST  0,0(0) 	clear location 0
-* End of standard prelude.
-* End of execution.
-  2:   HALT  0,0,0 	
+# C-
+.data
+# Area for global Variables
+.text
+main:
+  0: j __main
+func:
+# FuncK
+# CompK
+  1: addi $sp,$sp,-4
+  2: addi $sp,$sp,-4
+# stack manage
+# return 
+  3: jr $ra
+__main:
+# FuncK
+# CompK
+  4: addi $sp,$sp,-4
+# stack manage
+# -> Id
+  5:     LD  0,-1(5) 	load id value
+# <- Id
+# -> Const
+  6:    LDC  0,1(0) 	load const
+# <- Const
+# CallK
+# -> Id
+  7:     LD  0,-1(5) 	load id value
+# <- Id
+# stack manage
+# return 
+  8: jr $ra
+# End of execution.
+  9: li $v0, 10
+ 10: syscall

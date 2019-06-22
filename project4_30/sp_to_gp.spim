@@ -1,0 +1,35 @@
+.data
+test : .word 1
+msg: .asciiz "\n**\n"
+
+.text
+main:
+
+move ($sp), ($gp)
+
+# gp에 3을 넣는다.
+li $t1,3
+sw $t1,($gp) 
+
+# gp를 출력한다
+li $v0,1
+la $a0,($gp)
+syscall
+
+# 다음 줄
+li $v0,4
+la $a0,msg
+syscall
+
+# sp 출력
+li $v0,1
+la $a0,($sp)
+syscall
+
+li $v0,4
+la $a0,msg
+syscall
+
+# 종료
+li $v0,10
+syscall

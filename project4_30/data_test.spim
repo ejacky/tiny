@@ -1,0 +1,19 @@
+.data
+g1: .word 5
+std: .asciiz "  next  \n" 
+.text
+.globl main
+main:
+li $v0, 1
+sw $a0, ($sp)
+syscall
+
+li $v0, 4
+la $a0, std
+syscall
+
+addi $sp,$sp,-4
+
+li $v0, 1
+sw $a0, ($sp)
+syscall 
