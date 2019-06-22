@@ -12,11 +12,6 @@
 /* pc = program counter  */
 #define  pc 7
 
-/* sp = stack pointer */
-static int sp = 0;
-/* fp = frame pointer */
-static int fp = 0;
-
 /* mp = "memory pointer" points
  * to top of memory (for temp storage)
  */
@@ -72,7 +67,7 @@ void emitRM( char * op, int r, int d, int s, char *c);
 int emitSkip( int howMany);
 
 /* Procedure emitBackup backs up to 
- * loc = a previously skipped location
+ *  = a previously skipped location
  */
 void emitBackup( int loc);
 
