@@ -17,10 +17,19 @@ static int emitLoc = 0 ;
    emitBackup, and emitRestore */
 static int highEmitLoc = 0;
 
+void emitString(char* c){
+if (TraceCode) fprintf(code,"%s",c);
+}
+
+void emitLabel(char* c){
+if (TraceCode) fprintf(code,"%s:\n",c);
+}
+
 /* just write some codes*/
 void emitCode(char* c){
 
-if (TraceCode) fprintf(code,"%s\n",c);
+if (TraceCode) fprintf(code,"%3d: %s\n",emitLoc,c);
+  ++emitLoc ;
 }
 
 /* Procedure emitComment prints a comment line 

@@ -28,6 +28,9 @@ static void cGen (TreeNode * tree);
 
 /* Procedure genStmt generates code at a statement node */
 static void genDecl( TreeNode * tree){
+  TreeNode * p1, * p2, * p3;
+  int savedLoc1,savedLoc2,currentLoc;
+  int loc;
 #if DEBUG
   printf("genDecl\n");
 #endif
@@ -36,14 +39,42 @@ static void genDecl( TreeNode * tree){
 #if DEBUG
       printf("Decl FuncK %s\n",tree->attr.name);
 #endif
+      /* global vars 선언에서 바로 main 으로*/
       if(!isGlobalVarsDone){
         isGlobalVarsDone=TRUE;
+        emitString(".text\n");
+        emitLabel("main");
         emitCode("j __main");
       }
+      /* main 함수 부분 라벨 예외*/
+      if(!strcmp(tree->attr.name,"main")){
+        emitLabel("__main");
 
-      if(!strcmp(tree->attr.name,"main"))
-        emitCode("__main:");
-      
+      }else{
+        emitLabel(tree->attr.name);
+      }
+
+      /* body of func */
+      //p1 = tree->child[2];
+      //cGen(p1);
+
+         emitComment("FuncK");
+
+      break;
+    case VarK:
+#if DEBUG
+      printf("Decl VarK %s\n",tree->attr.name);
+#endif
+      if(!isGlobalVarsDone){
+        // 생각해보니 할 것이 없다.
+      }
+      // local variables
+      else{
+        emitCode("addi $sp,$sp,-4");
+      }
+
+      break;
+    case ArrVarK:
       break;
   }
 }
@@ -51,7 +82,8 @@ static void genDecl( TreeNode * tree){
 
 /* Procedure genStmt generates code at a statement node */
 static void genStmt( TreeNode * tree)
-{ TreeNode * p1, * p2, * p3;
+{ 
+  TreeNode * p1, * p2, * p3;
   int savedLoc1,savedLoc2,currentLoc;
   int loc;
 
@@ -94,8 +126,6 @@ static void genStmt( TreeNode * tree)
            emitRestore() ;
          }
          if (TraceCode)  emitComment("<- if") ;
-         break; /* if_k */
-
 //      case RepeatK:
 //         if (TraceCode) emitComment("-> repeat") ;
 //         p1 = tree->child[0] ;
@@ -111,17 +141,19 @@ static void genStmt( TreeNode * tree)
 //         break; /* repeat */
 //
       case CompK:
-         p1 = tree->child[0] ;
-         p2 = tree->child[1] ;
-         emitComment("Compound Statment : var_decl");
-         cGen(p1);
-         emitComment("Compound Statment : stmt_list");
-         cGen(p2);
+         emitComment("CompK");
+         //p1 = tree->child[0] ;
+         //p2 = tree->child[1] ;
+        // emitComment("Compound Statment : var_decl");
+         //cGen(p1);
+        // emitComment("Compound Statment : stmt_list");
+        // cGen(p2);
 
           break;
       case IterK:
           break;
       case RetK:
+          emitComment("RetK");
           break;
       case ElseK:
           break;
@@ -243,6 +275,7 @@ static void genExp( TreeNode * tree)
     case CallK:
       
 
+         emitComment("CallK");
       break;   
 
     default:
@@ -282,6 +315,30 @@ static void cGen( TreeNode * tree)
     }
     for( i=0; i<MAXCHILDREN;i++){
       cGen(tree->child[i]);
+      if(tree->child[i]==NULL)
+        continue;
+
+      switch(tree->nodekind){
+          case DeclK:
+            switch(tree->kind.decl){
+              case FuncK:
+                  // Function 끝에 return
+                  if(tree->child[i]->nodekind == StmtK){
+                    emitComment("return ");
+                    emitCode("jr $ra");
+                  }
+                break;
+            }
+          break;
+          case StmtK:
+              switch(tree->kind.stmt){
+                case CompK:
+                  // Compound 끝에 stack관리
+                  emitComment("stack manage");
+                  break;
+              }
+          break;
+      }
     }
     cGen(tree->sibling);
   }
@@ -305,8 +362,8 @@ void codeGen(TreeNode * syntaxTree, char * codefile)
    strcpy(s,"File: ");
    strcat(s,codefile);
    emitComment("C-");
-   emitCode(".text");
-   emitCode("main:");
+   emitString(".data\n");
+   emitComment("Area for global Variables");
    /* generate standard prelude */
  //  emitRM("LD",mp,0,ac,"load maxaddress from location 0");
 //   emitRM("ST",ac,0,ac,"clear location 0");
@@ -318,6 +375,8 @@ void codeGen(TreeNode * syntaxTree, char * codefile)
 #endif
    /* finish */
    emitComment("End of execution.");
+   emitCode("li $v0, 10");
+   emitCode("syscall");
 //   emitRO("HALT",0,0,0,"");
 #if DEBUG
    printf("CODEGEN\n");
