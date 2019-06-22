@@ -12,6 +12,11 @@
 /* pc = program counter  */
 #define  pc 7
 
+/* sp = stack pointer */
+static int sp = 0;
+/* fp = frame pointer */
+static int fp = 0;
+
 /* mp = "memory pointer" points
  * to top of memory (for temp storage)
  */
@@ -30,6 +35,10 @@
 #define  ac1 1
 
 /* code emitting utilities */
+
+/* just write some codes
+ * */
+void emitCode(char* c);
 
 /* Procedure emitComment prints a comment line 
  * with comment c in the code file

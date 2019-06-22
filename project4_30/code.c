@@ -17,6 +17,12 @@ static int emitLoc = 0 ;
    emitBackup, and emitRestore */
 static int highEmitLoc = 0;
 
+/* just write some codes*/
+void emitCode(char* c){
+
+if (TraceCode) fprintf(code,"%s\n",c);
+}
+
 /* Procedure emitComment prints a comment line 
  * with comment c in the code file
  */
