@@ -12,6 +12,10 @@
 #include "code.h"
 #include "cgen.h"
 
+
+
+static int  isGlobalVarsDone=FALSE;
+
 /* tmpOffset is the memory offset for temps
    It is decremented each time a temp is
    stored, and incremeted when loaded again
@@ -27,6 +31,14 @@ static void genDecl( TreeNode * tree){
 #if DEBUG
   printf("genDecl\n");
 #endif
+  switch(tree->kind.decl){
+    case FuncK:
+      if(!isGlobalVarsDone){
+        isGlobalVarsDone=TRUE;
+        emitCode("j __main");
+      }
+      break;
+  }
 }
 /*genDecl*/
 
@@ -40,8 +52,10 @@ static void genStmt( TreeNode * tree)
   printf("genStmt\n");
 #endif
   switch (tree->kind.stmt) {
-
       case IfK :
+#if DEBUG
+  printf("IfK lineno %d\n",tree->lineno);
+#endif
          if (TraceCode) emitComment("-> if") ;
          p1 = tree->child[0] ;
          p2 = tree->child[1] ;
@@ -49,21 +63,29 @@ static void genStmt( TreeNode * tree)
          /* generate code for test expression */
          cGen(p1);
          savedLoc1 = emitSkip(1) ;
+       
+         printf("savedLoc1 : %d\n",savedLoc1);
+
          emitComment("if: jump to else belongs here");
          /* recurse on then part */
          cGen(p2);
          savedLoc2 = emitSkip(1) ;
+
+         printf("savedLoc2 : %d\n",savedLoc2);
+
          emitComment("if: jump to end belongs here");
          currentLoc = emitSkip(0) ;
          emitBackup(savedLoc1) ;
          emitRM_Abs("JEQ",ac,currentLoc,"if: jmp to else");
          emitRestore() ;
          /* recurse on else part */
-         cGen(p3);
-         currentLoc = emitSkip(0) ;
-         emitBackup(savedLoc2) ;
-         emitRM_Abs("LDA",pc,currentLoc,"jmp to end") ;
-         emitRestore() ;
+         if(p3 != NULL){
+           cGen(p3);
+           currentLoc = emitSkip(0) ;
+           emitBackup(savedLoc2) ;
+           emitRM_Abs("LDA",pc,currentLoc,"jmp to end") ;
+           emitRestore() ;
+         }
          if (TraceCode)  emitComment("<- if") ;
          break; /* if_k */
 
@@ -83,6 +105,14 @@ static void genStmt( TreeNode * tree)
 //
       case CompK:
           break;
+      case IterK:
+          break;
+      case RetK:
+          break;
+      case ElseK:
+          break;
+
+
       case 111:   
          if (TraceCode) emitComment("-> assign") ;
          /* generate code for rhs */
@@ -256,13 +286,13 @@ void codeGen(TreeNode * syntaxTree, char * codefile)
 {  char * s = malloc(strlen(codefile)+7);
    strcpy(s,"File: ");
    strcat(s,codefile);
-   emitComment("TINY Compilation to TM Code");
-   emitComment(s);
+   emitComment("C-");
+   emitCode(".text");
+   emitCode("main:");
    /* generate standard prelude */
-   emitComment("Standard prelude:");
-   emitRM("LD",mp,0,ac,"load maxaddress from location 0");
-   emitRM("ST",ac,0,ac,"clear location 0");
-   emitComment("End of standard prelude.");
+ //  emitRM("LD",mp,0,ac,"load maxaddress from location 0");
+//   emitRM("ST",ac,0,ac,"clear location 0");
+//   emitComment("End of standard prelude.");
    /* generate code for TINY program */
    cGen(syntaxTree);
 #if DEBUG
@@ -270,7 +300,7 @@ void codeGen(TreeNode * syntaxTree, char * codefile)
 #endif
    /* finish */
    emitComment("End of execution.");
-   emitRO("HALT",0,0,0,"");
+//   emitRO("HALT",0,0,0,"");
 #if DEBUG
    printf("CODEGEN\n");
 #endif
