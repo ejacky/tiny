@@ -33,10 +33,17 @@ static void genDecl( TreeNode * tree){
 #endif
   switch(tree->kind.decl){
     case FuncK:
+#if DEBUG
+      printf("Decl FuncK %s\n",tree->attr.name);
+#endif
       if(!isGlobalVarsDone){
         isGlobalVarsDone=TRUE;
         emitCode("j __main");
       }
+
+      if(!strcmp(tree->attr.name,"main"))
+        emitCode("__main:");
+      
       break;
   }
 }
@@ -104,6 +111,13 @@ static void genStmt( TreeNode * tree)
 //         break; /* repeat */
 //
       case CompK:
+         p1 = tree->child[0] ;
+         p2 = tree->child[1] ;
+         emitComment("Compound Statment : var_decl");
+         cGen(p1);
+         emitComment("Compound Statment : stmt_list");
+         cGen(p2);
+
           break;
       case IterK:
           break;
@@ -226,6 +240,10 @@ static void genExp( TreeNode * tree)
          } /* case op */
          if (TraceCode)  emitComment("<- Op") ;
          break; /* OpK */
+    case CallK:
+      
+
+      break;   
 
     default:
       break;
