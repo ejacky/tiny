@@ -21,7 +21,7 @@ static int highEmitLoc = 0;
  * with comment c in the code file
  */
 void emitComment( char * c )
-{ if (TraceCode) fprintf(code,"* %s\n",c);}
+{ if (TraceCode) fprintf(code,"# %s\n",c);}
 
 /* Procedure emitRO emits a register-only
  * TM instruction
