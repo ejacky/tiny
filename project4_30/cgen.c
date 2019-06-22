@@ -21,6 +21,15 @@ static int tmpOffset = 0;
 /* prototype for internal recursive code generator */
 static void cGen (TreeNode * tree);
 
+
+/* Procedure genStmt generates code at a statement node */
+static void genDecl( TreeNode * tree){
+#if DEBUG
+  printf("genDecl\n");
+#endif
+}
+/*genDecl*/
+
 /* Procedure genStmt generates code at a statement node */
 static void genStmt( TreeNode * tree)
 { TreeNode * p1, * p2, * p3;
@@ -216,6 +225,9 @@ static void cGen( TreeNode * tree)
         break;
       case ParamK:
         genParam(tree);
+        break;
+      case DeclK:
+        genDecl(tree);
         break;
       default:
         break;
