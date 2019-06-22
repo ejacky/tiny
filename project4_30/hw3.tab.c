@@ -465,12 +465,12 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint16 yyrline[] =
 {
        0,    34,    34,    37,    46,    48,    49,    51,    56,    61,
-      70,    86,    90,    96,    95,   113,   114,   123,   132,   133,
-     142,   152,   158,   167,   169,   178,   180,   181,   182,   183,
-     184,   186,   187,   189,   196,   204,   210,   214,   219,   227,
-     229,   234,   233,   243,   249,   255,   261,   267,   273,   279,
-     281,   287,   293,   295,   301,   307,   309,   310,   311,   312,
-     318,   318,   327,   328,   330,   339
+      70,    86,    90,    96,    95,   113,   114,   124,   133,   134,
+     143,   153,   159,   168,   170,   179,   181,   182,   183,   184,
+     185,   187,   188,   190,   197,   205,   211,   215,   220,   228,
+     230,   235,   234,   244,   250,   256,   262,   268,   274,   280,
+     282,   288,   294,   296,   302,   308,   310,   311,   312,   313,
+     319,   319,   328,   329,   331,   340
 };
 #endif
 
@@ -1457,14 +1457,15 @@ yyreduce:
 
                    (yyval) = newParamNode(NonArrParamK);
                    (yyval)->type = VOID;
+                   (yyval)->lineno = lineno;
 
 
                  }
-#line 1464 "hw3.tab.c" /* yacc.c:1646  */
+#line 1465 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 124 "hw3.y" /* yacc.c:1646  */
+#line 125 "hw3.y" /* yacc.c:1646  */
     { YYSTYPE t = (yyvsp[-2]);
                    if (t != NULL)
                    { while (t->sibling != NULL)
@@ -1473,17 +1474,17 @@ yyreduce:
                      (yyval) = (yyvsp[-2]); }
                      else (yyval) = (yyvsp[0]); 
                  }
-#line 1477 "hw3.tab.c" /* yacc.c:1646  */
+#line 1478 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 132 "hw3.y" /* yacc.c:1646  */
+#line 133 "hw3.y" /* yacc.c:1646  */
     { (yyval) = (yyvsp[0]); }
-#line 1483 "hw3.tab.c" /* yacc.c:1646  */
+#line 1484 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 134 "hw3.y" /* yacc.c:1646  */
+#line 135 "hw3.y" /* yacc.c:1646  */
     {
 		   (yyval) = newParamNode(NonArrParamK);
                    (yyval)->type = (yyvsp[-1])->attr.type;
@@ -1492,11 +1493,11 @@ yyreduce:
 
                    /*$$->child[0] = $1;*/
                  }
-#line 1496 "hw3.tab.c" /* yacc.c:1646  */
+#line 1497 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 144 "hw3.y" /* yacc.c:1646  */
+#line 145 "hw3.y" /* yacc.c:1646  */
     { (yyval) = newParamNode(ArrParamK);
                    /*$$->child[0] = $1;*/
                    (yyval)->type = (yyvsp[-3])->attr.type;
@@ -1504,20 +1505,20 @@ yyreduce:
                    (yyval)->attr.arr.size = 0;
                    (yyval)->lineno = lineno;
                  }
-#line 1508 "hw3.tab.c" /* yacc.c:1646  */
+#line 1509 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 153 "hw3.y" /* yacc.c:1646  */
+#line 154 "hw3.y" /* yacc.c:1646  */
     { (yyval) = newStmtNode(CompK);
                    (yyval)->child[0] = (yyvsp[-2]); /* local variable declarations */
                    (yyval)->child[1] = (yyvsp[-1]); /* statements */
                  }
-#line 1517 "hw3.tab.c" /* yacc.c:1646  */
+#line 1518 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 159 "hw3.y" /* yacc.c:1646  */
+#line 160 "hw3.y" /* yacc.c:1646  */
     { YYSTYPE t = (yyvsp[-1]);
                    if (t != NULL)
                    { while (t->sibling != NULL)
@@ -1526,17 +1527,17 @@ yyreduce:
                      (yyval) = (yyvsp[-1]); }
                      else (yyval) = (yyvsp[0]);
                  }
-#line 1530 "hw3.tab.c" /* yacc.c:1646  */
+#line 1531 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 167 "hw3.y" /* yacc.c:1646  */
+#line 168 "hw3.y" /* yacc.c:1646  */
     { (yyval) = NULL; }
-#line 1536 "hw3.tab.c" /* yacc.c:1646  */
+#line 1537 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 170 "hw3.y" /* yacc.c:1646  */
+#line 171 "hw3.y" /* yacc.c:1646  */
     { YYSTYPE t = (yyvsp[-1]);
                    if (t != NULL)
                    { while (t->sibling != NULL)
@@ -1545,104 +1546,104 @@ yyreduce:
                      (yyval) = (yyvsp[-1]); }
                      else (yyval) = (yyvsp[0]);
                  }
-#line 1549 "hw3.tab.c" /* yacc.c:1646  */
+#line 1550 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 178 "hw3.y" /* yacc.c:1646  */
+#line 179 "hw3.y" /* yacc.c:1646  */
     { (yyval) = NULL; }
-#line 1555 "hw3.tab.c" /* yacc.c:1646  */
+#line 1556 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 180 "hw3.y" /* yacc.c:1646  */
+#line 181 "hw3.y" /* yacc.c:1646  */
     { (yyval) = (yyvsp[0]); }
-#line 1561 "hw3.tab.c" /* yacc.c:1646  */
+#line 1562 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 181 "hw3.y" /* yacc.c:1646  */
+#line 182 "hw3.y" /* yacc.c:1646  */
     { (yyval) = (yyvsp[0]); }
-#line 1567 "hw3.tab.c" /* yacc.c:1646  */
+#line 1568 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 182 "hw3.y" /* yacc.c:1646  */
+#line 183 "hw3.y" /* yacc.c:1646  */
     { (yyval) = (yyvsp[0]); }
-#line 1573 "hw3.tab.c" /* yacc.c:1646  */
+#line 1574 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 183 "hw3.y" /* yacc.c:1646  */
+#line 184 "hw3.y" /* yacc.c:1646  */
     { (yyval) = (yyvsp[0]); }
-#line 1579 "hw3.tab.c" /* yacc.c:1646  */
+#line 1580 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 184 "hw3.y" /* yacc.c:1646  */
+#line 185 "hw3.y" /* yacc.c:1646  */
     { (yyval) = (yyvsp[0]); }
-#line 1585 "hw3.tab.c" /* yacc.c:1646  */
+#line 1586 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 186 "hw3.y" /* yacc.c:1646  */
+#line 187 "hw3.y" /* yacc.c:1646  */
     { (yyval) = (yyvsp[-1]); }
-#line 1591 "hw3.tab.c" /* yacc.c:1646  */
+#line 1592 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 187 "hw3.y" /* yacc.c:1646  */
+#line 188 "hw3.y" /* yacc.c:1646  */
     { (yyval) = NULL; }
-#line 1597 "hw3.tab.c" /* yacc.c:1646  */
+#line 1598 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 190 "hw3.y" /* yacc.c:1646  */
+#line 191 "hw3.y" /* yacc.c:1646  */
     { (yyval) = newStmtNode(IfK);
                    (yyval)->child[0] = (yyvsp[-4]);
                    (yyval)->child[1] = (yyvsp[-2]);
                    (yyval)->child[2] = (yyvsp[0]);
                  }
-#line 1607 "hw3.tab.c" /* yacc.c:1646  */
+#line 1608 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 197 "hw3.y" /* yacc.c:1646  */
+#line 198 "hw3.y" /* yacc.c:1646  */
     { (yyval) = newStmtNode(IfK);
                    (yyval)->child[0] = (yyvsp[-2]);
                    (yyval)->child[1] = (yyvsp[0]);
                    (yyval)->child[2] = NULL;
                  }
-#line 1617 "hw3.tab.c" /* yacc.c:1646  */
+#line 1618 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 205 "hw3.y" /* yacc.c:1646  */
+#line 206 "hw3.y" /* yacc.c:1646  */
     { (yyval) = newStmtNode(IterK);
                    (yyval)->child[0] = (yyvsp[-2]);
                    (yyval)->child[1] = (yyvsp[0]);
                  }
-#line 1626 "hw3.tab.c" /* yacc.c:1646  */
+#line 1627 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 211 "hw3.y" /* yacc.c:1646  */
+#line 212 "hw3.y" /* yacc.c:1646  */
     { (yyval) = newStmtNode(RetK);
                    (yyval)->child[0] = NULL;
                  }
-#line 1634 "hw3.tab.c" /* yacc.c:1646  */
+#line 1635 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 215 "hw3.y" /* yacc.c:1646  */
+#line 216 "hw3.y" /* yacc.c:1646  */
     { (yyval) = newStmtNode(RetK);
                    (yyval)->child[0] = (yyvsp[-1]);
                  }
-#line 1642 "hw3.tab.c" /* yacc.c:1646  */
+#line 1643 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 220 "hw3.y" /* yacc.c:1646  */
+#line 221 "hw3.y" /* yacc.c:1646  */
     { 
                    (yyval) = newExpNode(AssignK);
                    (yyval)->attr.op = ASSIGN;
@@ -1650,216 +1651,216 @@ yyreduce:
                    (yyval)->child[0] = (yyvsp[-2]);
                    (yyval)->child[1] = (yyvsp[0]);
                  }
-#line 1654 "hw3.tab.c" /* yacc.c:1646  */
+#line 1655 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 227 "hw3.y" /* yacc.c:1646  */
+#line 228 "hw3.y" /* yacc.c:1646  */
     { (yyval) = (yyvsp[0]); }
-#line 1660 "hw3.tab.c" /* yacc.c:1646  */
+#line 1661 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 230 "hw3.y" /* yacc.c:1646  */
+#line 231 "hw3.y" /* yacc.c:1646  */
     { (yyval) = newExpNode(IdK);
                    (yyval)->attr.name = savedName;
                  }
-#line 1668 "hw3.tab.c" /* yacc.c:1646  */
+#line 1669 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 234 "hw3.y" /* yacc.c:1646  */
+#line 235 "hw3.y" /* yacc.c:1646  */
     { (yyval) = newExpNode(ArrIdK);
                    (yyval)->attr.name = savedName;
                  }
-#line 1676 "hw3.tab.c" /* yacc.c:1646  */
+#line 1677 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 42:
-#line 238 "hw3.y" /* yacc.c:1646  */
+#line 239 "hw3.y" /* yacc.c:1646  */
     { 
                 (yyval) = (yyvsp[-3]);
                 (yyval)->child[0] = (yyvsp[-1]);
                  }
-#line 1685 "hw3.tab.c" /* yacc.c:1646  */
+#line 1686 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 43:
-#line 244 "hw3.y" /* yacc.c:1646  */
+#line 245 "hw3.y" /* yacc.c:1646  */
     { (yyval) = newExpNode(OpK);
                    (yyval)->child[0] = (yyvsp[-2]);
                    (yyval)->child[1] = (yyvsp[0]);
                    (yyval)->attr.op = LTEQ;
                  }
-#line 1695 "hw3.tab.c" /* yacc.c:1646  */
+#line 1696 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 44:
-#line 250 "hw3.y" /* yacc.c:1646  */
+#line 251 "hw3.y" /* yacc.c:1646  */
     { (yyval) = newExpNode(OpK);
                    (yyval)->child[0] = (yyvsp[-2]);
                    (yyval)->child[1] = (yyvsp[0]);
                    (yyval)->attr.op = LT;
                  }
-#line 1705 "hw3.tab.c" /* yacc.c:1646  */
+#line 1706 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 45:
-#line 256 "hw3.y" /* yacc.c:1646  */
+#line 257 "hw3.y" /* yacc.c:1646  */
     { (yyval) = newExpNode(OpK);
                    (yyval)->child[0] = (yyvsp[-2]);
                    (yyval)->child[1] = (yyvsp[0]);
                    (yyval)->attr.op = GT;
                  }
-#line 1715 "hw3.tab.c" /* yacc.c:1646  */
+#line 1716 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 46:
-#line 262 "hw3.y" /* yacc.c:1646  */
+#line 263 "hw3.y" /* yacc.c:1646  */
     { (yyval) = newExpNode(OpK);
                    (yyval)->child[0] = (yyvsp[-2]);
                    (yyval)->child[1] = (yyvsp[0]);
                    (yyval)->attr.op = GTEQ;
                  }
-#line 1725 "hw3.tab.c" /* yacc.c:1646  */
+#line 1726 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 47:
-#line 268 "hw3.y" /* yacc.c:1646  */
+#line 269 "hw3.y" /* yacc.c:1646  */
     { (yyval) = newExpNode(OpK);
                    (yyval)->child[0] = (yyvsp[-2]);
                    (yyval)->child[1] = (yyvsp[0]);
                    (yyval)->attr.op = EQ;
                  }
-#line 1735 "hw3.tab.c" /* yacc.c:1646  */
+#line 1736 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 48:
-#line 274 "hw3.y" /* yacc.c:1646  */
+#line 275 "hw3.y" /* yacc.c:1646  */
     { (yyval) = newExpNode(OpK);
                    (yyval)->child[0] = (yyvsp[-2]);
                    (yyval)->child[1] = (yyvsp[0]);
                    (yyval)->attr.op = NEQ;
                  }
-#line 1745 "hw3.tab.c" /* yacc.c:1646  */
+#line 1746 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 49:
-#line 279 "hw3.y" /* yacc.c:1646  */
+#line 280 "hw3.y" /* yacc.c:1646  */
     { (yyval) = (yyvsp[0]); }
-#line 1751 "hw3.tab.c" /* yacc.c:1646  */
+#line 1752 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 50:
-#line 282 "hw3.y" /* yacc.c:1646  */
+#line 283 "hw3.y" /* yacc.c:1646  */
     { (yyval) = newExpNode(OpK);
                    (yyval)->child[0] = (yyvsp[-2]);
                    (yyval)->child[1] = (yyvsp[0]);
                    (yyval)->attr.op = PLUS;
                  }
-#line 1761 "hw3.tab.c" /* yacc.c:1646  */
+#line 1762 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 51:
-#line 288 "hw3.y" /* yacc.c:1646  */
+#line 289 "hw3.y" /* yacc.c:1646  */
     { (yyval) = newExpNode(OpK);
                    (yyval)->child[0] = (yyvsp[-2]);
                    (yyval)->child[1] = (yyvsp[0]);
                    (yyval)->attr.op = MINUS;
                  }
-#line 1771 "hw3.tab.c" /* yacc.c:1646  */
+#line 1772 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 52:
-#line 293 "hw3.y" /* yacc.c:1646  */
+#line 294 "hw3.y" /* yacc.c:1646  */
     { (yyval) = (yyvsp[0]); }
-#line 1777 "hw3.tab.c" /* yacc.c:1646  */
+#line 1778 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 53:
-#line 296 "hw3.y" /* yacc.c:1646  */
+#line 297 "hw3.y" /* yacc.c:1646  */
     { (yyval) = newExpNode(OpK);
                    (yyval)->child[0] = (yyvsp[-2]);
                    (yyval)->child[1] = (yyvsp[0]);
                    (yyval)->attr.op = TIMES;
                  }
-#line 1787 "hw3.tab.c" /* yacc.c:1646  */
+#line 1788 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 54:
-#line 302 "hw3.y" /* yacc.c:1646  */
+#line 303 "hw3.y" /* yacc.c:1646  */
     { (yyval) = newExpNode(OpK);
                    (yyval)->child[0] = (yyvsp[-2]);
                    (yyval)->child[1] = (yyvsp[0]);
                    (yyval)->attr.op = OVER;
                  }
-#line 1797 "hw3.tab.c" /* yacc.c:1646  */
+#line 1798 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 55:
-#line 307 "hw3.y" /* yacc.c:1646  */
+#line 308 "hw3.y" /* yacc.c:1646  */
     { (yyval) = (yyvsp[0]); }
-#line 1803 "hw3.tab.c" /* yacc.c:1646  */
+#line 1804 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 56:
-#line 309 "hw3.y" /* yacc.c:1646  */
+#line 310 "hw3.y" /* yacc.c:1646  */
     { (yyval) = (yyvsp[-1]); }
-#line 1809 "hw3.tab.c" /* yacc.c:1646  */
+#line 1810 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 57:
-#line 310 "hw3.y" /* yacc.c:1646  */
+#line 311 "hw3.y" /* yacc.c:1646  */
     { (yyval) = (yyvsp[0]); }
-#line 1815 "hw3.tab.c" /* yacc.c:1646  */
+#line 1816 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 58:
-#line 311 "hw3.y" /* yacc.c:1646  */
+#line 312 "hw3.y" /* yacc.c:1646  */
     { (yyval) = (yyvsp[0]); }
-#line 1821 "hw3.tab.c" /* yacc.c:1646  */
+#line 1822 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 59:
-#line 313 "hw3.y" /* yacc.c:1646  */
+#line 314 "hw3.y" /* yacc.c:1646  */
     { (yyval) = newExpNode(ConstK);
                    (yyval)->attr.val = atoi(tokenString);
                    (yyval)->type = INT;
                  }
-#line 1830 "hw3.tab.c" /* yacc.c:1646  */
+#line 1831 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 60:
-#line 318 "hw3.y" /* yacc.c:1646  */
+#line 319 "hw3.y" /* yacc.c:1646  */
     {
                  (yyval) = newExpNode(CallK);
                  (yyval)->attr.name = savedName;
               }
-#line 1839 "hw3.tab.c" /* yacc.c:1646  */
+#line 1840 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 61:
-#line 323 "hw3.y" /* yacc.c:1646  */
+#line 324 "hw3.y" /* yacc.c:1646  */
     { (yyval) = (yyvsp[-3]);
                    (yyval)->child[0] = (yyvsp[-1]);
                  }
-#line 1847 "hw3.tab.c" /* yacc.c:1646  */
+#line 1848 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 62:
-#line 327 "hw3.y" /* yacc.c:1646  */
+#line 328 "hw3.y" /* yacc.c:1646  */
     { (yyval) = (yyvsp[0]); }
-#line 1853 "hw3.tab.c" /* yacc.c:1646  */
+#line 1854 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 63:
-#line 328 "hw3.y" /* yacc.c:1646  */
+#line 329 "hw3.y" /* yacc.c:1646  */
     { (yyval) = NULL; }
-#line 1859 "hw3.tab.c" /* yacc.c:1646  */
+#line 1860 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 64:
-#line 331 "hw3.y" /* yacc.c:1646  */
+#line 332 "hw3.y" /* yacc.c:1646  */
     { YYSTYPE t = (yyvsp[-2]);
                    if (t != NULL)
                    { while (t->sibling != NULL)
@@ -1868,17 +1869,17 @@ yyreduce:
                      (yyval) = (yyvsp[-2]); }
                      else (yyval) = (yyvsp[0]);
                  }
-#line 1872 "hw3.tab.c" /* yacc.c:1646  */
+#line 1873 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
   case 65:
-#line 339 "hw3.y" /* yacc.c:1646  */
+#line 340 "hw3.y" /* yacc.c:1646  */
     { (yyval) = (yyvsp[0]); }
-#line 1878 "hw3.tab.c" /* yacc.c:1646  */
+#line 1879 "hw3.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1882 "hw3.tab.c" /* yacc.c:1646  */
+#line 1883 "hw3.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2106,7 +2107,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 342 "hw3.y" /* yacc.c:1906  */
+#line 343 "hw3.y" /* yacc.c:1906  */
 
 
 int yyerror(char * message)

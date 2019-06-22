@@ -72,11 +72,16 @@ static void genStmt( TreeNode * tree)
 //         if (TraceCode)  emitComment("<- repeat") ;
 //         break; /* repeat */
 //
-      case AssignK:
+      case CompK:
+          break;
+      case 111:   
          if (TraceCode) emitComment("-> assign") ;
          /* generate code for rhs */
+
+         // void argument
+         //if(!strcmp(tree->attr.name,"(null)")) break;
 #if DEBUG
-         printf("AssignK\n");
+         printf("CompK %s\n",tree->attr.name);
 #endif
          cGen(tree->child[0]);
          /* now store value */
@@ -100,6 +105,15 @@ static void genStmt( TreeNode * tree)
          break;
     }
 } /* genStmt */
+
+/* Procedure genExp generates code at an expression node */
+static void genParam( TreeNode * tree){
+#if DEBUG
+  printf("genParam\n");
+#endif
+
+}/* genParam*/
+
 
 /* Procedure genExp generates code at an expression node */
 static void genExp( TreeNode * tree)
@@ -179,15 +193,14 @@ static void genExp( TreeNode * tree)
   }
 } /* genExp */
 
+
+
 /* Procedure cGen recursively generates code by
  * tree traversal
  */
 static void cGen( TreeNode * tree)
 { 
 
-#if DEBUG
-  printf("cGen\n");
-#endif
   int i=0;
   if (tree != NULL)
   {
@@ -201,6 +214,9 @@ static void cGen( TreeNode * tree)
       case ExpK:
         genExp(tree);
         break;
+      case ParamK:
+        genParam(tree);
+        break;
       default:
         break;
     }
@@ -210,7 +226,8 @@ static void cGen( TreeNode * tree)
     cGen(tree->sibling);
   }
 #if DEBUG
-  printf("cGen finished\n");
+  if(tree!=NULL)
+  printf("cGen lineno %d finished\n",tree->lineno);
 #endif
 }
 

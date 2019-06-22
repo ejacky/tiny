@@ -117,6 +117,7 @@ params      : param_list  { $$ = $1; }
 
                    $$ = newParamNode(NonArrParamK);
                    $$->type = VOID;
+                   $$->lineno = lineno;
 
 
                  }
