@@ -26,6 +26,10 @@ static void genStmt( TreeNode * tree)
 { TreeNode * p1, * p2, * p3;
   int savedLoc1,savedLoc2,currentLoc;
   int loc;
+
+#if DEBUG
+  printf("genStmt\n");
+#endif
   switch (tree->kind.stmt) {
 
       case IfK :
@@ -71,6 +75,9 @@ static void genStmt( TreeNode * tree)
       case AssignK:
          if (TraceCode) emitComment("-> assign") ;
          /* generate code for rhs */
+#if DEBUG
+         printf("AssignK\n");
+#endif
          cGen(tree->child[0]);
          /* now store value */
          loc = st_lookup(tree->attr.name);
@@ -96,11 +103,18 @@ static void genStmt( TreeNode * tree)
 
 /* Procedure genExp generates code at an expression node */
 static void genExp( TreeNode * tree)
-{ int loc;
+{
+#if DEBUG
+  printf("genExp\n");
+#endif
+  int loc;
   TreeNode * p1, * p2;
   switch (tree->kind.exp) {
 
     case ConstK :
+#if DEBUG
+      printf("genExp ConstK\n");
+#endif
       if (TraceCode) emitComment("-> Const") ;
       /* gen code to load integer constant using LDC */
       emitRM("LDC",ac,tree->attr.val,0,"load const");
@@ -169,8 +183,18 @@ static void genExp( TreeNode * tree)
  * tree traversal
  */
 static void cGen( TreeNode * tree)
-{ if (tree != NULL)
-  { switch (tree->nodekind) {
+{ 
+
+#if DEBUG
+  printf("cGen\n");
+#endif
+  int i=0;
+  if (tree != NULL)
+  {
+#if DEBUG
+  printf("cGen lineno %d\n",tree->lineno);
+#endif
+    switch (tree->nodekind) {
       case StmtK:
         genStmt(tree);
         break;
@@ -180,8 +204,14 @@ static void cGen( TreeNode * tree)
       default:
         break;
     }
+    for( i=0; i<MAXCHILDREN;i++){
+      cGen(tree->child[i]);
+    }
     cGen(tree->sibling);
   }
+#if DEBUG
+  printf("cGen finished\n");
+#endif
 }
 
 /**********************************************/
@@ -206,6 +236,9 @@ void codeGen(TreeNode * syntaxTree, char * codefile)
    emitComment("End of standard prelude.");
    /* generate code for TINY program */
    cGen(syntaxTree);
+#if DEBUG
+   printf("cGen(SyntaxTree) Finished\n");
+#endif
    /* finish */
    emitComment("End of execution.");
    emitRO("HALT",0,0,0,"");

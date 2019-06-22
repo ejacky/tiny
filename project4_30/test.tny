@@ -1,20 +1,14 @@
+int a;
+int b;
+int c;
 int d;
+int e;
 
-int func(int a)
-{
-    int b;
-    b = 1;
-    return a + b;
-}
+void main(void){
 
-void main(void)
-{
-    int a;
-    d = 1;
-    {
-        int b;
-        {
-            int c;
-        }
-    }
+  int aa;
+
+  int bb;
+  int cc;
+
 }
