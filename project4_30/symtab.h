@@ -50,6 +50,8 @@ typedef struct ScopeTreeRec
     int level;
     /* 순회 도움 플래그*/
     int visited;
+    /* Stack 관리를 위한 변수*/
+    int location;
 } * ScopeTree;
 
 /* the hash table */

@@ -14,7 +14,7 @@ ScopeTree globals;
 ScopeTree top;
 
 /* counter for variable memory locations */
-static int location = -8;
+static int location = -4;
 static int location_global = 0;
 static int location_param = 0;
 
@@ -96,11 +96,13 @@ void scope_down()
             top = top->sibling;
         }
         top->visited = 1;
-    }
+    } 
+    top->location = location;
 }
 
 void scope_up()
 {
+    location = top->location;
     top = top->parent;
 }
 
@@ -108,7 +110,7 @@ void scope_up()
 void check_comp_out( TreeNode* t )
 {
     if ( t->nodekind == StmtK && t->kind.stmt == CompK )
-    {
+    {  
         scope_up();
     }
     else if ( t->nodekind == DeclK && t->kind.decl == FuncK )
@@ -293,12 +295,14 @@ static void insertNode( TreeNode* t )
                         if ( top == globals )
                         {
                             location_global += 4;
+                            t->location = location_global;
                             st_insert_local( t->attr.name, t->lineno,
                                              location_global, t );
                         }
                         else
                         {
                             location -= 4;
+                            t->location = location;
                             st_insert_local( t->attr.name, t->lineno, location,
                                              t );
                         }
@@ -318,12 +322,14 @@ static void insertNode( TreeNode* t )
                         if ( top == globals )
                         {
                             location_global += 4 * t->attr.arr.size;
+                            t->location = location_global;
                             st_insert_local( t->attr.arr.name, t->lineno,
                                              location_global, t );
                         }
                         else
                         {
                             location -= 4*t->attr.arr.size;
+                            t->location = location;
                             st_insert_local( t->attr.arr.name, t->lineno,
                                              location, t );
                         }
@@ -341,6 +347,7 @@ static void insertNode( TreeNode* t )
                     if ( st_lookup( t->attr.arr.name ) == -1 )
                     {
                         location_global += 4;
+                        t->location = location_global;
                         st_insert( t->attr.arr.name, t->lineno, location_global,
                                    t );
                     }
@@ -372,6 +379,8 @@ static void insertNode( TreeNode* t )
                     if ( st_lookup( t->attr.arr.name ) == -1 )
                     {
                         location_param += 4;
+                        t->location = location_param;
+
                         st_insert( t->attr.arr.name, t->lineno, location_param,
                                    t );
                     }
@@ -387,6 +396,7 @@ static void insertNode( TreeNode* t )
                     if ( st_lookup( t->attr.arr.name ) == -1 )
                     {
                         location_param += 4;
+                        t->location = location_param;
                         st_insert( t->attr.arr.name, t->lineno, location_param,
                                    t );
                     }

@@ -105,6 +105,8 @@ typedef struct treeNode
         ArrayAttr arr;
     } attr;
     int type;
+    /* 주소 */
+    int location;
 } TreeNode;
 
 /**************************************************/

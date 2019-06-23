@@ -34,6 +34,8 @@
 void emitString(char* c);
 /* just Emit Label */
 void emitLabel(char* c);
+/* emitJal*/
+void emitJal(char* c);
 
 /* just write some codes with location
  * */

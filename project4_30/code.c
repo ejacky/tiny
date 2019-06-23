@@ -17,6 +17,11 @@ static int emitLoc = 0 ;
    emitBackup, and emitRestore */
 static int highEmitLoc = 0;
 
+void emitJal(char*c){
+if (TraceCode) fprintf(code,"%3d: jal %s\n",emitLoc,c);
+emitLoc++;
+}
+
 void emitString(char* c){
 if (TraceCode) fprintf(code,"%s",c);
 }
@@ -28,7 +33,7 @@ if (TraceCode) fprintf(code,"%s:\n",c);
 /* just write some codes*/
 void emitCode(char* c){
 
-if (TraceCode) fprintf(code,"%3d: %s\n",emitLoc,c);
+if (TraceCode) fprintf(code,"l%-3d: %s\n",emitLoc,c);
   ++emitLoc ;
 }
 
