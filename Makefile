@@ -1,33 +1,32 @@
-cc = gcc
 
-CFLAGS = 
+CFLAGS = -Wall -g
 
 tiny: main.o util.o scan.o parse.o symtab.o analyze.o code.o cgen.o
-	gcc -g main.o
+	gcc $(CFLAGS) -o tiny main.o util.o scan.o parse.o symtab.o analyze.o code.o cgen.o
 
 main.o: main.c globals.h util.h scan.h parse.h analyze.h cgen.h
-	gcc -g -c main.c
+	gcc $(CFLAGS) -c main.c
 
 util.o: util.c util.h globals.h
-	gcc -g -c util.c
+	gcc $(CFLAGS) -c util.c
 
 scan.o: scan.c scan.h util.h globals.h
-	gcc -g -c scan.c
+	gcc $(CFLAGS) -c scan.c
 
 parse.o: parse.c parse.h scan.h globals.h util.h
-	gcc -g -fno-builtin -c parse.c
+	gcc $(CFLAGS) -fno-builtin -c parse.c
 
 symtab.o: symtab.c symtab.h
-	gcc -g -c symtab.c
+	gcc $(CFLAGS) -c symtab.c
 
 analyze.o: analyze.c globals.h symtab.h analyze.h
-	gcc -g -c analyze.c
+	gcc $(CFLAGS) -c analyze.c
 
 code.o: code.c code.h globals.h
-	gcc -g  -c code.c
+	gcc $(CFLAGS)  -c code.c
 
 cgen.o: cgen.c globals.h symtab.h code.h cgen.h
-	gcc -g -c cgen.c
+	gcc $(CFLAGS) -c cgen.c
 
 
 clean: 
