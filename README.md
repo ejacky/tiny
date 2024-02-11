@@ -1,4 +1,4 @@
-This is the README.DOS file included in the loucomp.zip file.
+This is the README.md file included in the loucomp.zip file.
 The other files in the distribution are the source code files 
 in standard C for the TINY compiler and Tiny Machine simulator
 as described in the text:
